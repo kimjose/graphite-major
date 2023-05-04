@@ -5,7 +5,8 @@
     "autoload": {
         "psr-4": {
             "Umb\\SystemBackup\\": "api/"
-        }
+        },
+        "files": ["bootstrap.php"]
     },
     "authors": [
         {
@@ -18,7 +19,9 @@
         "illuminate/database": "8.x-dev",
         "vlucas/phpdotenv": "5.5.x-dev",
         "ext-curl": "*",
-        "ext-json": "*"
+        "ext-json": "*",
+        "bramus/router": "dev-master",
+        "phpmailer/phpmailer": "dev-master"
     },
     "require-dev": {
         "phpunit/phpunit": "9.6.x-dev"

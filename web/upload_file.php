@@ -1,5 +1,5 @@
 <?php
-$facilityId = $_GET['facility_id'];
+// $facilityId = $_GET['facility_id'];
 ?>
 
 <div class="container-fluid mt-4">
@@ -9,8 +9,8 @@ $facilityId = $_GET['facility_id'];
                 <div class="form-group">
                     <input type="file" name="upload_file" id="inputFile" class="form-control">
                 </div>
-                <div class="progress-bar">
-                    <div id="progress"></div>
+                <div class="progress-bar mt-2 d-none">
+                    <div id="progress" class=""></div>
                 </div>
                 <input type="submit" value="Upload" class="btn btn-primary mt-3">
 
@@ -37,6 +37,7 @@ $facilityId = $_GET['facility_id'];
     const inputFile = document.getElementById("inputFile")
     const formUploadFile = document.getElementById("formUploadFile")
     const progressBar = document.getElementById('progress');
+    const progressBarContainer = document.querySelector('.progress-bar')
 
     formUploadFile.addEventListener('submit', e => {
         e.preventDefault();
@@ -48,13 +49,21 @@ $facilityId = $_GET['facility_id'];
         formData.append('upload_file', file)
 
         const xhr = new XMLHttpRequest();
-        xhr.open('POST', '/upload', true);
+        xhr.open('POST', '../upload_file', true);
+        xhr.upload.onloadstart = e => {
+            if (progressBarContainer.classList.contains("d-none")) progressBarContainer.classList.remove("d-none")
+        }
         xhr.upload.onprogress = e => {
             if (e.lengthComputable) {
                 const percentComplete = (e.loaded / e.total) * 100;
                 progressBar.style.width = `${percentComplete}%`;
             }
         };
+        xhr.upload.onloadend = e => {
+            setTimeout(() => {
+                if (!progressBarContainer.classList.contains("d-none")) progressBarContainer.classList.add("d-none")
+            }, 891)
+        }
         xhr.send(formData);
     })
 </script>

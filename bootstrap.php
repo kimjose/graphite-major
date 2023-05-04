@@ -13,8 +13,9 @@ $dotenv->load();
 
 // Validate environment variables
 $envVars = [
-    'SESSION_APP_NAME', 'SESSION_DURATION', 'PUBLIC_DIR', 'LOGS_DIR', 'DB_BACKUP_DIR', 'APP_NAME', 'DB_HOST', 'DB_DRIVER', 'DB_USER', 'DB_PASSWORD',
-    'DB_NAME', 'MAILER_NAME', 'MAILER_HOST', 'MAILER_ADDRESS', 'MAILER_PASSWORD', 'MAILER_PORT'
+    'SESSION_APP_NAME', 'SESSION_DURATION', 'PUBLIC_DIR', 'LOGS_DIR', 'APP_NAME', 'DB_HOST', 'DB_DRIVER', 'DB_USER', 'DB_PASSWORD',
+    'DB_NAME', 'MAILER_NAME', 'MAILER_HOST', 'MAILER_ADDRESS', 'MAILER_PASSWORD', 'MAILER_PORT', 'GRANT_TYPE', 'CLIENT_ID', 'CLIENT_SECRET',
+    'SCOPE'
 ];
 $unsetVars = [];
 foreach ($envVars as $envVar) {
@@ -50,3 +51,12 @@ define("PERM_CREATE_VISIT", 5);
 define("PERM_ALL_APS", 5);
 
 
+function response($code, $message, $data = null)
+{
+    header('Content-Type: application/json; charset=utf-8');
+    echo json_encode([
+        "code" => $code,
+        "message" => $message,
+        "data" => $data
+    ]);
+}
