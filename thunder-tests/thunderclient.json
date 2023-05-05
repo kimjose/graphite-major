@@ -46,5 +46,67 @@
       "form": []
     },
     "tests": []
+  },
+  {
+    "_id": "af7f2b6c-69ae-426d-a1f7-14957c47ba1d",
+    "colId": "145d0ab0-3376-4a72-b482-566376da2b87",
+    "containerId": "",
+    "name": "get facilities",
+    "url": "{{base_url}}facility/all",
+    "method": "GET",
+    "sortNum": 30000,
+    "created": "2023-05-05T10:53:33.185Z",
+    "modified": "2023-05-05T10:53:51.264Z",
+    "headers": [],
+    "params": [],
+    "tests": []
+  },
+  {
+    "_id": "0033d00c-791f-4f7a-aa05-d8e509192b12",
+    "colId": "145d0ab0-3376-4a72-b482-566376da2b87",
+    "containerId": "",
+    "name": "create facility",
+    "url": "{{base_url}}facility/create",
+    "method": "POST",
+    "sortNum": 40000,
+    "created": "2023-05-05T10:54:04.583Z",
+    "modified": "2023-05-05T10:57:55.872Z",
+    "headers": [
+      {
+        "name": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\n  \"mfl_code\": 12345,\n  \"name\": \"Test Facility\",\n  \"folder_id\": \"\"\n}",
+      "form": []
+    },
+    "tests": []
+  },
+  {
+    "_id": "1cdab39a-baa9-48f5-ab8f-7ab55727dfb0",
+    "colId": "145d0ab0-3376-4a72-b482-566376da2b87",
+    "containerId": "",
+    "name": "Update Facility",
+    "url": "{{base_url}}facility/update/1",
+    "method": "POST",
+    "sortNum": 50000,
+    "created": "2023-05-05T10:58:15.235Z",
+    "modified": "2023-05-05T10:59:09.769Z",
+    "headers": [
+      {
+        "name": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\n  \"mfl_code\": 12745,\n  \"name\": \"Test Facility\",\n  \"folder_id\": \"\"\n}",
+      "form": []
+    },
+    "tests": []
   }
 ]
