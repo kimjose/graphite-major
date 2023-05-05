@@ -1,0 +1,50 @@
+[
+  {
+    "_id": "c7760c76-cb51-418a-8333-395d0a7b0604",
+    "colId": "145d0ab0-3376-4a72-b482-566376da2b87",
+    "containerId": "",
+    "name": "create user",
+    "url": "{{base_url}}user/create",
+    "method": "POST",
+    "sortNum": 10000,
+    "created": "2023-05-05T09:24:16.917Z",
+    "modified": "2023-05-05T10:37:33.992Z",
+    "headers": [
+      {
+        "name": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\n  \"access_level\": \"Program\",\n  \"first_name\": \"Joseph\",\n  \"middle_name\": \"N\",\n  \"last_name\": \"Kimani\",\n  \"email\": \"kimjose693@gmail.com\",\n  \"phone_number\": \"0717845485\",\n  \"facility_ids\": \"1,2\"\n}",
+      "form": []
+    },
+    "tests": []
+  },
+  {
+    "_id": "630671a0-39c1-4341-9164-f0481b25720c",
+    "colId": "145d0ab0-3376-4a72-b482-566376da2b87",
+    "containerId": "",
+    "name": "Update User",
+    "url": "{{base_url}}user/update/1",
+    "method": "POST",
+    "sortNum": 20000,
+    "created": "2023-05-05T09:25:19.689Z",
+    "modified": "2023-05-05T10:40:21.056Z",
+    "headers": [
+      {
+        "name": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\n  \"access_level\": \"Program\",\n  \"first_name\": \"Joseph\",\n  \"middle_name\": \"N\",\n  \"last_name\": \"Kimani\",\n  \"email\": \"kimjose693@gmail.com\",\n  \"phone_number\": \"0717845485\",\n  \"facility_ids\": \"1,2,3\"\n}",
+      "form": []
+    },
+    "tests": []
+  }
+]
