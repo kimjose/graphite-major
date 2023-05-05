@@ -5,7 +5,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class User extends Model{
 
-    protected $fillable = ['access_level', 'first_name', 'middle_name', 'last_name', 'email', 'phone_number', 'password', 'last_login', 'facility_id', 'active', 'created_by'];
+    protected $fillable = ['access_level', 'first_name', 'middle_name', 'last_name', 'email', 'phone_number', 'last_login', 'facility_ids', 'active', 'created_by'];
 
     protected $hidden = ['password'];
 

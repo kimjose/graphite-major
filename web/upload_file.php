@@ -38,7 +38,8 @@
     const formUploadFile = document.getElementById("formUploadFile")
     const progressBar = document.getElementById('progress');
     const progressBarContainer = document.querySelector('.progress-bar')
-
+    let test = $('#progress')
+    console.dir(test)
     formUploadFile.addEventListener('submit', e => {
         e.preventDefault();
 
@@ -59,6 +60,15 @@
                 progressBar.style.width = `${percentComplete}%`;
             }
         };
+        xhr.onload = e => {
+            console.log('On result...');
+            if (xhr.status != 200) {
+                toastr.error("Failed to upload file...")
+            } else {
+                formUploadFile.reset()
+                toastr.success("File uploaded successfully")
+            }
+        }
         xhr.upload.onloadend = e => {
             setTimeout(() => {
                 if (!progressBarContainer.classList.contains("d-none")) progressBarContainer.classList.add("d-none")

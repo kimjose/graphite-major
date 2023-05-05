@@ -1,7 +1,9 @@
 <?php
 
 use Bramus\Router\Router;
+use Umb\SystemBackup\Controllers\UsersController;
 use Umb\SystemBackup\Controllers\Utils\Utility;
+use Umb\SystemBackup\Models\User;
 
 require_once __DIR__ . "/vendor/autoload.php";
 
@@ -14,6 +16,21 @@ $router->set404(function () {
     echo $notFound;
 });
 
+$router->mount('/user', function() use($router){
+    $router->get('/all', function(){
+        response(SUCCESS_RESPONSE_CODE, "Users", User::all());
+    });
+    $data = json_decode(file_get_contents('php://input'), true);
+    $router->post('/create', function() use ($data){
+        $controller = new UsersController();
+        $controller->createUser($data);
+    });
+    $router->post('/update/{id}', function($id) use ($data){
+        $controller = new UsersController();
+        $controller->updateUser($id, $data);
+    });
+});
+
 $router->post('/upload_file', function () {
     try {
         if (isset($_FILES['upload_file'])) {
@@ -21,11 +38,13 @@ $router->post('/upload_file', function () {
             if (!is_dir($dest)) {
                 mkdir($dest);
             }
-            echo Utility::uploadFile("", $dest);
+            $uploaded = Utility::uploadFile("", $dest);
+            if($uploaded == '') throw new Exception("Error Processing Request", 1);            
         } else throw new Exception("Error Processing Request", 1);
     } catch (Throwable $th) {
         Utility::logError(-1, $th->getMessage());
         response(PRECONDITION_FAILED_ERROR_CODE, $th->getMessage());
+        http_response_code(PRECONDITION_FAILED_ERROR_CODE);
     }
 });
 

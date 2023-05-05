@@ -15,7 +15,20 @@ $facilities = Facility::all(); // TODO filter according to user logged in.
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sharepoint Backups</title>
     <link rel="stylesheet" href="css/bootstrap.min.css">
+    <!-- Toastr -->
+    <link rel="stylesheet" href="plugins/toastr/toastr.min.css">
+
     <script src="js/bootstrap.bundle.min.js"></script>
+    <script src="plugins/sweetalert2/sweetalert2.min.js"></script>
+
+    <!--⚡⚡⚡⚡ Scripts ⚡⚡⚡⚡ -->
+    <script src="plugins/jquery/jquery.min.js"></script>
+    <!-- jQuery UI 1.11.4 -->
+    <script src="plugins/jquery-ui/jquery-ui.min.js"></script>
+
+    <!-- Toastr -->
+    <script src="plugins/toastr/toastr.min.js"></script>
+
 </head>
 
 <body>
