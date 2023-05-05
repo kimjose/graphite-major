@@ -30,6 +30,10 @@ $router->mount('/user', function() use($router){
         $controller = new UsersController();
         $controller->updateUser($id, $data);
     });
+    $router->post('/request-otp', function() use($data){
+        $controller = new UsersController();
+        $controller->requestOtp($data);
+    });
 });
 
 $router->mount('/facility', function() use($router){
