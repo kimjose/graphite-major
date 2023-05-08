@@ -156,5 +156,173 @@
       "form": []
     },
     "tests": []
+  },
+  {
+    "_id": "c76e5fc5-608f-4cbf-ac0c-06b5f277f9b7",
+    "colId": "139fc6ea-abfe-46e2-92b9-66288b9773c4",
+    "containerId": "",
+    "name": "uploadFile",
+    "url": "https://graph.microsoft.com/v1.0/drives/b!0xyf-sxTkkqFel7v-6CHS1h2I9wcc1VItFkBUeMX15rPBkBcpOtiSZVc35A4dA--/items/0167YEQWE5AY7FYDW5ANCKOKICPBWLUIW6:/ess_hts_import.xlsx:/content",
+    "method": "PUT",
+    "sortNum": 10000,
+    "created": "2023-05-08T12:06:01.685Z",
+    "modified": "2023-05-08T12:06:01.685Z",
+    "headers": [
+      {
+        "name": "Content-Type",
+        "value": "application/json",
+        "isDisabled": true
+      },
+      {
+        "name": "Authorization",
+        "value": "Bearer eyJ0eXAiOiJKV1QiLCJub25jZSI6IkVhUDBnZV82MWFSbDhlbzRKNDl1d2dwdy03WEhVZnN0M3pNWV91LU1yRTQiLCJhbGciOiJSUzI1NiIsIng1dCI6Ii1LSTNROW5OUjdiUm9meG1lWm9YcWJIWkdldyIsImtpZCI6Ii1LSTNROW5OUjdiUm9meG1lWm9YcWJIWkdldyJ9.eyJhdWQiOiJodHRwczovL2dyYXBoLm1pY3Jvc29mdC5jb20iLCJpc3MiOiJodHRwczovL3N0cy53aW5kb3dzLm5ldC8xYzE3NzcwZS1hMjY5LTQ1MTctYjI5Ni1jNzFlODQxOTY0NTQvIiwiaWF0IjoxNjgwOTQ2MDM1LCJuYmYiOjE2ODA5NDYwMzUsImV4cCI6MTY4MDk0OTkzNSwiYWlvIjoiRTJaZ1lIQUl1bE1rdXBNdjVrdTZkWXJFUmgwTEFBPT0iLCJhcHBfZGlzcGxheW5hbWUiOiJTWVNURU0gQkFDS1VQIiwiYXBwaWQiOiIzOTFlNTVjZC01Mjg3LTRlMjMtOWM4ZC00ZDY5MTc5NDRkMTIiLCJhcHBpZGFjciI6IjEiLCJpZHAiOiJodHRwczovL3N0cy53aW5kb3dzLm5ldC8xYzE3NzcwZS1hMjY5LTQ1MTctYjI5Ni1jNzFlODQxOTY0NTQvIiwiaWR0eXAiOiJhcHAiLCJvaWQiOiI2ZDg4MDYxMy0yOGU2LTRjMGYtOGVhZS0wZTFhYTM2ZWQzNDAiLCJyaCI6IjAuQVZ3QURuY1hIR21pRjBXeWxzY2VoQmxrVkFNQUFBQUFBQUFBd0FBQUFBQUFBQUJjQUFBLiIsInJvbGVzIjpbIkFQSUNvbm5lY3RvcnMuUmVhZFdyaXRlLkFsbCIsIkFjY2Vzc1Jldmlldy5SZWFkV3JpdGUuTWVtYmVyc2hpcCIsIkFjY2Vzc1Jldmlldy5SZWFkV3JpdGUuQWxsIiwiU2l0ZXMuUmVhZC5BbGwiLCJTaXRlcy5SZWFkV3JpdGUuQWxsIiwiU2l0ZXMuTWFuYWdlLkFsbCIsIkZpbGVzLlJlYWRXcml0ZS5BbGwiLCJGaWxlcy5SZWFkLkFsbCIsIkFQSUNvbm5lY3RvcnMuUmVhZC5BbGwiLCJBY2Nlc3NSZXZpZXcuUmVhZC5BbGwiXSwic3ViIjoiNmQ4ODA2MTMtMjhlNi00YzBmLThlYWUtMGUxYWEzNmVkMzQwIiwidGVuYW50X3JlZ2lvbl9zY29wZSI6IkFGIiwidGlkIjoiMWMxNzc3MGUtYTI2OS00NTE3LWIyOTYtYzcxZTg0MTk2NDU0IiwidXRpIjoiUWhSMkt3cGFTazJyZlZ1a1lQOF9BQSIsInZlciI6IjEuMCIsIndpZHMiOlsiMDk5N2ExZDAtMGQxZC00YWNiLWI0MDgtZDVjYTczMTIxZTkwIl0sInhtc190Y2R0IjoxNTg4Njk1ODYwfQ.SMAdLagg2EYdm011LkR_-BxLca3S3HS8hIEaB0ZBP5A23EXOHMO3VW5qpD6oDLKukVZeOs0zXu0BFpEtpM1iJLwxark9y1oPZoXnX13kdOi-YCeNwwuchPzYKwVEWj_L0qnIH_KzW52DKDLK9YRRlktuhtOote4QH8MqBUe5rMiC2-bzq1BQF4qMNNEJbiB0OCnU-XutSTVI9hYuIdpqzSDTOBuobggQh6BOV5Pr-gn7reW4_R3P-9X--QVVAzNHwtJuocVhL2kSffIywkpUIstTl0ZAKVPlwBgbIiSDg6Fc0UmzPwHCdZVfRLSkUmcbBYbT7_0GI3ziXiaK7yZYWw",
+        "isDisabled": true
+      }
+    ],
+    "body": {
+      "type": "binary",
+      "binary": "/C:/API-EMRBACKUP/ess_hts_import.xlsx"
+    },
+    "auth": {
+      "type": "bearer",
+      "bearer": "{{access_token}}"
+    }
+  },
+  {
+    "_id": "cee04e95-f7a3-4aed-9e2d-92eec5bf546d",
+    "colId": "139fc6ea-abfe-46e2-92b9-66288b9773c4",
+    "containerId": "",
+    "name": "getToken",
+    "url": "https://login.microsoftonline.com/1c17770e-a269-4517-b296-c71e84196454/oauth2/v2.0/token",
+    "method": "GET",
+    "sortNum": 20000,
+    "created": "2023-05-08T12:06:01.687Z",
+    "modified": "2023-05-08T12:16:51.219Z",
+    "headers": [],
+    "params": [],
+    "body": {
+      "type": "formdata",
+      "raw": "",
+      "form": [
+        {
+          "name": "test",
+          "value": "testupload",
+          "isDisabled": true
+        },
+        {
+          "name": "grant_type",
+          "value": "client_credentials"
+        },
+        {
+          "name": "client_id",
+          "value": "391e55cd-5287-4e23-9c8d-4d6917944d11"
+        },
+        {
+          "name": "client_secret",
+          "value": "WwN8Q~4jiHGyXqfmTwYRWz2LE3JNixEQymFN_bpe"
+        },
+        {
+          "name": "scope",
+          "value": "https://graph.microsoft.com/.default"
+        }
+      ]
+    },
+    "tests": []
+  },
+  {
+    "_id": "0dad77bc-b2b5-4472-b20f-58256cfc20cf",
+    "colId": "139fc6ea-abfe-46e2-92b9-66288b9773c4",
+    "containerId": "",
+    "name": "getDriveID",
+    "url": "https://graph.microsoft.com/v1.0/sites/cihebkenyaorg.sharepoint.com,fa9f1cd3-53cc-4a92-857a-5eeffba0874b,dc237658-731c-4855-b459-0151e317d79a/drive",
+    "method": "GET",
+    "sortNum": 30000,
+    "created": "2023-05-08T12:06:01.688Z",
+    "modified": "2023-05-08T12:06:01.688Z",
+    "headers": [
+      {
+        "name": "Authorization",
+        "value": "Bearer eyJ0eXAiOiJKV1QiLCJub25jZSI6Imp6eEJiaHBaVFlsY1pzM2tmRDNXa1YzUUZxa2VYLUt6UVJYM0llNDhtMGsiLCJhbGciOiJSUzI1NiIsIng1dCI6Ii1LSTNROW5OUjdiUm9meG1lWm9YcWJIWkdldyIsImtpZCI6Ii1LSTNROW5OUjdiUm9meG1lWm9YcWJIWkdldyJ9.eyJhdWQiOiJodHRwczovL2dyYXBoLm1pY3Jvc29mdC5jb20iLCJpc3MiOiJodHRwczovL3N0cy53aW5kb3dzLm5ldC8xYzE3NzcwZS1hMjY5LTQ1MTctYjI5Ni1jNzFlODQxOTY0NTQvIiwiaWF0IjoxNjgzMTAyNjM1LCJuYmYiOjE2ODMxMDI2MzUsImV4cCI6MTY4MzEwNjUzNSwiYWlvIjoiRTJaZ1lHZ084ZzhSTURJNTl2Snd0a0g4Y3ZldEFBPT0iLCJhcHBfZGlzcGxheW5hbWUiOiJTWVNURU0gQkFDS1VQIiwiYXBwaWQiOiIzOTFlNTVjZC01Mjg3LTRlMjMtOWM4ZC00ZDY5MTc5NDRkMTIiLCJhcHBpZGFjciI6IjEiLCJpZHAiOiJodHRwczovL3N0cy53aW5kb3dzLm5ldC8xYzE3NzcwZS1hMjY5LTQ1MTctYjI5Ni1jNzFlODQxOTY0NTQvIiwiaWR0eXAiOiJhcHAiLCJvaWQiOiI2ZDg4MDYxMy0yOGU2LTRjMGYtOGVhZS0wZTFhYTM2ZWQzNDAiLCJyaCI6IjAuQVZ3QURuY1hIR21pRjBXeWxzY2VoQmxrVkFNQUFBQUFBQUFBd0FBQUFBQUFBQUJjQUFBLiIsInJvbGVzIjpbIkFQSUNvbm5lY3RvcnMuUmVhZFdyaXRlLkFsbCIsIkFjY2Vzc1Jldmlldy5SZWFkV3JpdGUuTWVtYmVyc2hpcCIsIkFjY2Vzc1Jldmlldy5SZWFkV3JpdGUuQWxsIiwiU2l0ZXMuUmVhZC5BbGwiLCJTaXRlcy5SZWFkV3JpdGUuQWxsIiwiU2l0ZXMuTWFuYWdlLkFsbCIsIkZpbGVzLlJlYWRXcml0ZS5BbGwiLCJGaWxlcy5SZWFkLkFsbCIsIkFQSUNvbm5lY3RvcnMuUmVhZC5BbGwiLCJBY2Nlc3NSZXZpZXcuUmVhZC5BbGwiXSwic3ViIjoiNmQ4ODA2MTMtMjhlNi00YzBmLThlYWUtMGUxYWEzNmVkMzQwIiwidGVuYW50X3JlZ2lvbl9zY29wZSI6IkFGIiwidGlkIjoiMWMxNzc3MGUtYTI2OS00NTE3LWIyOTYtYzcxZTg0MTk2NDU0IiwidXRpIjoiYlcyRkZlVDd6RVdFUXNWQ3NNRlhBQSIsInZlciI6IjEuMCIsIndpZHMiOlsiMDk5N2ExZDAtMGQxZC00YWNiLWI0MDgtZDVjYTczMTIxZTkwIl0sInhtc190Y2R0IjoxNTg4Njk1ODYwfQ.fP4SI96AsT3moSeIVj6rMd1gSaw2EPeETipHCwUZuDSYvzc0vFuzHXUZxLlf9EmM7bCdo1KvZUVjxONjkF9DXuhnfHECAJSJB2LYVyMArup_u7cebSz1gj4xzzzUomT545pokfVr457GI80lgUIFMc5J6GyTn0MAwPWY0eVjSEex1vAM7BxXtN_vZoAt770NHAfWYTE4reVdRB3Wq_HkaSA32fC1ob-FHXefvPoxR2mTSvlh6xi2DtRQ0qMCrPPfnH2WmSjRO4FHf3vQe77tQ6sNtYTJDFNe-u4FmEyy1gVaiIZMdZEa1vKKS5LcLDGMjkeIzAQytnoiTAkD1d7Upg"
+      }
+    ],
+    "auth": {
+      "type": "none"
+    }
+  },
+  {
+    "_id": "473eb7de-d875-4b09-9129-5e99fbe05d59",
+    "colId": "139fc6ea-abfe-46e2-92b9-66288b9773c4",
+    "containerId": "",
+    "name": "getSiteID",
+    "url": "https://graph.microsoft.com/v1.0/sites/cihebkenyaorg.sharepoint.com:/sites/HealthInformatics-SYSTEMBACKUP?$select=id",
+    "method": "GET",
+    "sortNum": 40000,
+    "created": "2023-05-08T12:06:01.689Z",
+    "modified": "2023-05-08T12:06:01.689Z",
+    "headers": [
+      {
+        "name": "Authorization",
+        "value": "Bearer {{access_token}}"
+      }
+    ],
+    "params": [
+      {
+        "name": "$select",
+        "value": "id"
+      }
+    ],
+    "auth": {
+      "type": "none"
+    }
+  },
+  {
+    "_id": "28fa4848-7f6a-4a54-b748-e8b3a0815765",
+    "colId": "139fc6ea-abfe-46e2-92b9-66288b9773c4",
+    "containerId": "",
+    "name": "getFolderPathID",
+    "url": "https://graph.microsoft.com/v1.0/drives/b!0xyf-sxTkkqFel7v-6CHS1h2I9wcc1VItFkBUeMX15rPBkBcpOtiSZVc35A4dA--/root:/SYSTEM%20BACKUP/EVENT%20MANAGER/CONNECT/KenyaEMR/",
+    "method": "GET",
+    "sortNum": 50000,
+    "created": "2023-05-08T12:06:01.690Z",
+    "modified": "2023-05-08T12:06:01.690Z",
+    "headers": [],
+    "auth": {
+      "type": "bearer",
+      "bearer": "{{access_token}}"
+    }
+  },
+  {
+    "_id": "0d04ded1-8642-4c5f-81c2-5cf339c9c484",
+    "colId": "139fc6ea-abfe-46e2-92b9-66288b9773c4",
+    "containerId": "",
+    "name": "List-files-in-drive",
+    "url": "https://graph.microsoft.com/v1.0/drives/b!0xyf-sxTkkqFel7v-6CHS1h2I9wcc1VItFkBUeMX15rPBkBcpOtiSZVc35A4dA--/items/0167YEQWC32NUYASTCWREYKXIJHDRGC2OI/children",
+    "method": "GET",
+    "sortNum": 60000,
+    "created": "2023-05-08T12:06:01.691Z",
+    "modified": "2023-05-08T12:06:01.691Z",
+    "headers": [
+      {
+        "name": "Authorization",
+        "value": "Bearer {{access_token}}"
+      }
+    ]
+  },
+  {
+    "_id": "de316a91-bb2b-4f89-9b99-74cd9c2785fa",
+    "colId": "139fc6ea-abfe-46e2-92b9-66288b9773c4",
+    "containerId": "",
+    "name": "delete-file",
+    "url": "https://graph.microsoft.com/v1.0/drives/b!0xyf-sxTkkqFel7v-6CHS1h2I9wcc1VItFkBUeMX15rPBkBcpOtiSZVc35A4dA--/items/0167YEQWATNH245UO5GVAZ36DQKQGVNE5A",
+    "method": "DELETE",
+    "sortNum": 70000,
+    "created": "2023-05-08T12:06:01.692Z",
+    "modified": "2023-05-08T12:06:01.692Z",
+    "headers": [
+      {
+        "name": "Authorization",
+        "value": "Bearer {{access_token}}"
+      }
+    ]
   }
 ]
