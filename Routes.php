@@ -34,6 +34,10 @@ $router->mount('/user', function() use($router){
         $controller = new UsersController();
         $controller->requestOtp($data);
     });
+    $router->post('/verify-otp', function() use($data){
+        $controller = new UsersController();
+        $controller->verifyOtp($data);
+    });
 });
 
 $router->mount('/facility', function() use($router){

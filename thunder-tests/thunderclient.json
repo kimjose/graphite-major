@@ -132,5 +132,29 @@
       "form": []
     },
     "tests": []
+  },
+  {
+    "_id": "605bb505-3176-4ad3-9a8f-627862952019",
+    "colId": "145d0ab0-3376-4a72-b482-566376da2b87",
+    "containerId": "",
+    "name": "verify otp",
+    "url": "{{base_url}}user/verify-otp",
+    "method": "POST",
+    "sortNum": 70000,
+    "created": "2023-05-08T05:23:29.425Z",
+    "modified": "2023-05-08T05:30:57.548Z",
+    "headers": [
+      {
+        "name": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\n  \"email\": \"kimjose693@gmail.com\",\n  \"code\": 4754\n}",
+      "form": []
+    },
+    "tests": []
   }
 ]
