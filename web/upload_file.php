@@ -1,5 +1,5 @@
 <?php
-// $facilityId = $_GET['facility_id'];
+ $facilityId = $_GET['facility_id'];
 ?>
 
 <div class="container-fluid mt-4">
@@ -27,20 +27,21 @@
     }
 
     #progress {
-        width: 0%;
+        width: 0;
         height: 100%;
         background-color: #4CAF50;
     }
 </style>
 
 <script>
-    const inputFile = document.getElementById("inputFile")
-    const formUploadFile = document.getElementById("formUploadFile")
-    const progressBar = document.getElementById('progress');
-    const progressBarContainer = document.querySelector('.progress-bar')
-    let test = $('#progress')
-    console.dir(test)
-    formUploadFile.addEventListener('submit', e => {
+
+        document.getElementById("formUploadFile").addEventListener('submit', e => {
+        let facilityId = '<?php echo $facilityId ?>'
+        let inputFile = document.getElementById("inputFile")
+        let progressBar = document.getElementById('progress');
+        let progressBarContainer = document.querySelector('.progress-bar')
+        let test = $('#progress')
+        console.dir(test)
         e.preventDefault();
 
         if (inputFile.files.length < 1) return
@@ -48,6 +49,7 @@
 
         let formData = new FormData();
         formData.append('upload_file', file)
+        formData.append('facility_id', facilityId)
 
         const xhr = new XMLHttpRequest();
         xhr.open('POST', '../upload_file', true);
@@ -62,7 +64,7 @@
         };
         xhr.onload = e => {
             console.log('On result...');
-            if (xhr.status != 200) {
+            if (xhr.status !== 200) {
                 toastr.error("Failed to upload file...")
             } else {
                 formUploadFile.reset()

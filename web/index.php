@@ -19,7 +19,6 @@ $facilities = Facility::all(); // TODO filter according to user logged in.
     <link rel="stylesheet" href="plugins/toastr/toastr.min.css">
 
     <script src="js/bootstrap.bundle.min.js"></script>
-    <script src="plugins/sweetalert2/sweetalert2.min.js"></script>
 
     <!--⚡⚡⚡⚡ Scripts ⚡⚡⚡⚡ -->
     <script src="plugins/jquery/jquery.min.js"></script>
@@ -37,7 +36,7 @@ $facilities = Facility::all(); // TODO filter according to user logged in.
     <div class="container">
         <div class="col-3">
             <div class="form-group">
-                <select name="facility" id="selectFacility" class=" form-select">
+                <select name="facility" id="selectFacility" class=" form-select" onchange="facilitySelectedChanged()">
                     <option value="" selected hidden> Select Facility</option>
                     <?php foreach ($facilities as $facility): ?>
                         <option value="<?php echo $facility->id ?>"><?php echo $facility->name ?></option>
@@ -55,10 +54,10 @@ $facilities = Facility::all(); // TODO filter according to user logged in.
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="#">Upload</a>
+                    <a class="nav-link tab active" aria-current="page" href="#" onclick="loadTabContent()">Upload</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#backups">Backups</a>
+                    <a class="nav-link tab" href="#backups" onclick="loadTabContent()">Backups</a>
                 </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
@@ -66,8 +65,9 @@ $facilities = Facility::all(); // TODO filter according to user logged in.
                         System Administration
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                        <li><a class="dropdown-item" href="#users">Users</a></li>
-                        <li><a class="dropdown-item" href="#facilities">Facilities</a></li>
+                        <li><a class="dropdown-item tab" href="#users" onclick="loadTabContent()">Users</a></li>
+                        <li><a class="dropdown-item tab" href="#facilities" onclick="loadTabContent()">Facilities</a>
+                        </li>
                         <li>
                             <hr class="dropdown-divider">
                         </li>
@@ -79,13 +79,72 @@ $facilities = Facility::all(); // TODO filter according to user logged in.
     </div>
 </nav>
 <!-- nav end -->
-<section>
-    <?php include_once(__DIR__ . "/upload_file.php") ?>
+<section id="contentSection">
 </section>
 
 <script>
+    const selectFacility = document.getElementById("selectFacility")
+    const tabs = document.querySelectorAll(".tab")
 
+
+    function init() {
+        let selectedFacility = localStorage.getItem('selected_facility')
+        $(selectFacility).val(selectedFacility)
+        loadTabContent()
+    }
+
+    function loadTabContent() {
+        setTimeout(() => {
+            let id = window.location.hash
+            console.log(`The id is  ${id}`);
+            let selectedFacility = localStorage.getItem('selected_facility')
+
+            $("#contentSection").html('')
+            switch (id) {
+                case "#backups": {
+                    fetch(`backups?facility_id=${selectedFacility}`)
+                        .then(response => {
+                            return response.text()
+                        })
+                        .then(response => {
+                            // console.log('response is ' + response)
+                            $("#contentSection").html(response)
+                        })
+                        .catch(err => {
+                            toastr.error(err.message)
+                        })
+                    break;
+                }
+                default: {
+
+                    $("#contentSection").html('')
+                    fetch(`upload_file?facility_id=${selectedFacility}`)
+                        .then(response => {
+                            return response.text()
+                        })
+                        .then(response => {
+                            // console.log('response is ' + response)
+                            $("#contentSection").html(response)
+                        })
+                        .catch(err => {
+                            toastr.error(err.message)
+                        })
+                    break
+                }
+            }
+        }, 510)
+
+    }
+
+    function facilitySelectedChanged() {
+        let selected = $(selectFacility).val()
+        localStorage.setItem('selected_facility', selected)
+        loadTabContent()
+    }
+
+    init()
 </script>
+
 </body>
 
 </html>
