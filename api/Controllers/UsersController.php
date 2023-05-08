@@ -76,7 +76,8 @@ class UsersController
         }
     }
 
-    public function verifyOtp($data){
+    public function verifyOtp($data): void
+    {
         try{
             $attributes = ['email', 'code'];
             $missing = Utility::checkMissingAttributes($data, $attributes);
@@ -93,7 +94,7 @@ class UsersController
 			$sessionData['user'] = $user;
 			$sessionData['expires_at'] = time() + ($_ENV['SESSION_DURATION'] * 60);
 			$_SESSION[$_ENV['SESSION_APP_NAME']] = $sessionData;
-
+            response(SUCCESS_RESPONSE_CODE, "Otp verified.");
         } catch(\Throwable $th){
             Utility::logError(SUCCESS_RESPONSE_CODE, $th->getMessage());
             response(PRECONDITION_FAILED_ERROR_CODE, $th->getMessage());
