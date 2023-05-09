@@ -54,10 +54,10 @@ $facilities = Facility::all(); // TODO filter according to user logged in.
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item">
-                    <a class="nav-link tab active" aria-current="page" href="#" onclick="loadTabContent()">Upload</a>
+                    <a class="nav-link tab active" id="tabUpload" aria-current="page" href="#" onclick="loadTabContent()">Upload</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link tab" href="#backups" onclick="loadTabContent()">Backups</a>
+                    <a class="nav-link tab" id="tabBackups" href="#backups" onclick="loadTabContent()">Backups</a>
                 </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
@@ -65,8 +65,8 @@ $facilities = Facility::all(); // TODO filter according to user logged in.
                         System Administration
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                        <li><a class="dropdown-item tab" href="#users" onclick="loadTabContent()">Users</a></li>
-                        <li><a class="dropdown-item tab" href="#facilities" onclick="loadTabContent()">Facilities</a>
+                        <li><a class="dropdown-item tab" id="tabUsers" href="#users" onclick="loadTabContent()">Users</a></li>
+                        <li><a class="dropdown-item tab" id="tabFacilities" href="#facilities" onclick="loadTabContent()">Facilities</a>
                         </li>
                         <li>
                             <hr class="dropdown-divider">
@@ -85,7 +85,7 @@ $facilities = Facility::all(); // TODO filter according to user logged in.
 <script>
     const selectFacility = document.getElementById("selectFacility")
     const tabs = document.querySelectorAll(".tab")
-
+    let currentId = window.location.hash
 
     function init() {
         let selectedFacility = localStorage.getItem('selected_facility')
@@ -100,8 +100,13 @@ $facilities = Facility::all(); // TODO filter according to user logged in.
             let selectedFacility = localStorage.getItem('selected_facility')
 
             $("#contentSection").html('')
+            for(let i = 0; i < tabs.length; i++){
+                let tab = tabs[i]
+                if(tab.classList.contains('active')) tab.classList.remove('active')
+            }
             switch (id) {
                 case "#backups": {
+                    document.querySelector("#tabBackups").classList.add('active')
                     fetch(`backups?facility_id=${selectedFacility}`)
                         .then(response => {
                             return response.text()
@@ -115,9 +120,38 @@ $facilities = Facility::all(); // TODO filter according to user logged in.
                         })
                     break;
                 }
+                case "#users": {
+                    document.querySelector("#tabUsers").classList.add('active')
+                    fetch(`users`)
+                        .then(response => {
+                            return response.text()
+                        })
+                        .then(response => {
+                            // console.log('response is ' + response)
+                            $("#contentSection").html(response)
+                        })
+                        .catch(err => {
+                            toastr.error(err.message)
+                        })
+                    break;
+                }
+                case "#facilities": {
+                    document.querySelector("#tabFacilities").classList.add('active')
+                    fetch(`facilities`)
+                        .then(response => {
+                            return response.text()
+                        })
+                        .then(response => {
+                            // console.log('response is ' + response)
+                            $("#contentSection").html(response)
+                        })
+                        .catch(err => {
+                            toastr.error(err.message)
+                        })
+                    break;
+                }
                 default: {
-
-                    $("#contentSection").html('')
+                    document.querySelector("#tabUpload").classList.add('active')
                     fetch(`upload_file?facility_id=${selectedFacility}`)
                         .then(response => {
                             return response.text()
@@ -145,6 +179,7 @@ $facilities = Facility::all(); // TODO filter according to user logged in.
     init()
 </script>
 
+<script src="js/index.js"></script>
 </body>
 
 </html>
