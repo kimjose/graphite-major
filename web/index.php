@@ -85,6 +85,7 @@ $facilities = Facility::all(); // TODO filter according to user logged in.
 <script>
     const selectFacility = document.getElementById("selectFacility")
     const tabs = document.querySelectorAll(".tab")
+    let facilityId = '';
     let currentId = window.location.hash
 
     function init() {
@@ -98,7 +99,7 @@ $facilities = Facility::all(); // TODO filter according to user logged in.
             let id = window.location.hash
             console.log(`The id is  ${id}`);
             let selectedFacility = localStorage.getItem('selected_facility')
-
+            facilityId = selectedFacility;
             $("#contentSection").html('')
             for(let i = 0; i < tabs.length; i++){
                 let tab = tabs[i]

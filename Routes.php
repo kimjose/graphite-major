@@ -4,6 +4,7 @@ use Bramus\Router\Router;
 use Umb\SystemBackup\Controllers\UsersController;
 use Umb\SystemBackup\Controllers\Utils\Utility;
 use Umb\SystemBackup\Models\Facility;
+use Umb\SystemBackup\Models\Upload;
 use Umb\SystemBackup\Models\User;
 
 require_once __DIR__ . "/vendor/autoload.php";
@@ -76,13 +77,19 @@ $router->mount('/facility', function() use($router){
 
 $router->post('/upload_file', function () {
     try {
+        if(!isset($_POST['facility_id'])) throw new Exception("Missing attributes: facility_id", -1);
+        // echo "The set facility id is : " . $_POST['facility_id'];
+        $facility = Facility::findOrFail($_POST['facility_id']);
         if (isset($_FILES['upload_file'])) {
             $dest = $_ENV['PUBLIC_DIR'] . "temp/";
             if (!is_dir($dest)) {
                 mkdir($dest);
             }
             $uploaded = Utility::uploadFile("", $dest);
-            if($uploaded == '') throw new Exception("Error Processing Request", 1);            
+            if($uploaded == '') throw new Exception("Error Processing Request", 1);
+            Upload::create([
+                "facility_id" => $facility->id, "file_name" => $uploaded, "created_by" => 1
+            ]);
         } else throw new Exception("Error Processing Request", 1);
     } catch (Throwable $th) {
         Utility::logError(-1, $th->getMessage());
@@ -90,12 +97,6 @@ $router->post('/upload_file', function () {
         http_response_code(PRECONDITION_FAILED_ERROR_CODE);
     }
 });
-
-
-
-
-
-
 
 $router->all('/logout', function () {
     session_start();

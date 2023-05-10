@@ -1,10 +1,9 @@
-const uploadFile = (facilityId) => {
+const uploadFile = () => {
     let inputFile = document.getElementById("inputFile")
     let progressBar = document.getElementById('progress');
     let progressBarContainer = document.querySelector('.progress-bar')
     let test = $('#progress')
     console.dir(test)
-    e.preventDefault();
 
     if (inputFile.files.length < 1) return
     let file = inputFile.files[0]
