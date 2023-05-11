@@ -30,14 +30,14 @@ $c = 1;
                                 <td><?php echo $c ?></td>
                                 <td><?php echo $file->name ?></td>
                                 <td><?php echo $file->created_date_time ?></td>
-                                <td><?php echo number_format((($file->size)/(1024*1000)), 2)  . ' MB'  ?></td>
+                                <td><?php echo number_format((($file->size) / (1024 * 1000)), 2)  . ' MB'  ?></td>
                                 <td>
                                     <a href="<?php echo $file->download_url ?>" target="_blank"> <i></i> Download</a>
                                 </td>
                             </tr>
                         <?php
-                        $c++;
-                     endforeach; ?>
+                            $c++;
+                        endforeach; ?>
                     </tbody>
                 </table>
             </div>
