@@ -1,6 +1,7 @@
 <?php
 
 use Bramus\Router\Router;
+use Umb\SystemBackup\Controllers\SharepointController;
 use Umb\SystemBackup\Controllers\UsersController;
 use Umb\SystemBackup\Controllers\Utils\Utility;
 use Umb\SystemBackup\Models\Facility;
@@ -72,6 +73,12 @@ $router->mount('/facility', function() use($router){
             response(PRECONDITION_FAILED_ERROR_CODE, $th->getMessage());
             http_response_code(PRECONDITION_FAILED_ERROR_CODE);
         }
+    });
+});
+$router->mount('/sharepoint', function() use($router){
+    $controller = new SharepointController();
+    $router->get('/load_drive_files/{id}', function($id) use ($controller){
+        $controller->loadDriveFiles($id);
     });
 });
 
