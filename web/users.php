@@ -44,7 +44,6 @@ $facilities = Facility::all();
     </div>
 </div>
 
-
 <!-- User Dialog -->
 <div class="modal fade" id="modalUser" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">

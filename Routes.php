@@ -80,6 +80,9 @@ $router->mount('/sharepoint', function() use($router){
     $router->get('/load_drive_files/{id}', function($id) use ($controller){
         $controller->loadDriveFiles($id);
     });
+    $router->get('/upload_queued_files', function() use($controller){
+        $controller->uploadQueuedFiles();
+    });
 });
 
 $router->post('/upload_file', function () {
