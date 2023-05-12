@@ -49,6 +49,18 @@ $systems = System::all();
                                 </select>
                             </div>
 
+                            <div class="form-group" id="divSelectSystem">
+                                <label for="selectSystem">Select System</label>
+                                <select class="form-control" id="selectSystem" name="system_ids">
+                                    <option selected hidden value="">Select System</option>
+                                    <?php
+                                    for ($i = 0; $i < sizeof($systems); $i++) :
+                                        $system = $systems[$i];
+                                    ?>
+                                        <option value="<?php echo $system->id; ?>"><?php echo $system->name; ?></option>
+                                    <?php endfor; ?>
+                                </select>
+                            </div>
                         </div>
                     </div>
 
@@ -89,7 +101,7 @@ $systems = System::all();
 </div>
 
 <style>
-    .add-user{
+    .add-user {
         padding: 10px;
         border-bottom: #09ADF1 5px solid;
         border-bottom-left-radius: 5px;
