@@ -1,12 +1,11 @@
 <?php
 
 use Umb\SystemBackup\Models\User;
-use Umb\SystemBackup\Models\Facility;
-
+use Umb\SystemBackup\Models\System;
 
 require_once __DIR__ . "/../vendor/autoload.php";
 $users = User::all();
-$facilities = Facility::all();
+$systems = System::all();
 ?>
 
 <div class="container-fluid mt-4">
@@ -67,7 +66,7 @@ $facilities = Facility::all();
                             <th>Name</th>
                             <th>Email</th>
                             <th>Phone Number</th>
-                            <th>Facilities</th>
+                            <th>Systems</th>
                             <th>Actions</th>
                         </tr>
                     </thead>

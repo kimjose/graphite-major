@@ -1,5 +1,5 @@
 <?php
- $facilityId = $_GET['facility_id'];
+ $systemId = $_GET['system_id'];
 ?>
 
 <div class="container-fluid mt-4">

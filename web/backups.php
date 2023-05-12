@@ -3,10 +3,10 @@
 use Umb\SystemBackup\Models\DriveFile;
 
 require_once __DIR__ . "/../vendor/autoload.php";
-$facilityId = $_GET['facility_id'];
-$facility = \Umb\SystemBackup\Models\Facility::find($facilityId);
+$systemId = $_GET['system_id'];
+$system = \Umb\SystemBackup\Models\System::find($systemId);
 // $files = DriveFile::all();
-$files = \Umb\SystemBackup\Models\DriveFile::where('folder_id', $facility->folder_id)->get();
+$files = \Umb\SystemBackup\Models\DriveFile::where('folder_id', $system->folder_id)->get();
 $c = 1;
 ?>
 <div class="container-fluid mt-4">

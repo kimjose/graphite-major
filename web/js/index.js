@@ -10,7 +10,7 @@ const uploadFile = () => {
 
     let formData = new FormData();
     formData.append('upload_file', file)
-    formData.append('facility_id', facilityId)
+    formData.append('system_id', systemId)
 
     const xhr = new XMLHttpRequest();
     xhr.open('POST', '../upload_file', true);

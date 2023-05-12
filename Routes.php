@@ -4,7 +4,7 @@ use Bramus\Router\Router;
 use Umb\SystemBackup\Controllers\SharepointController;
 use Umb\SystemBackup\Controllers\UsersController;
 use Umb\SystemBackup\Controllers\Utils\Utility;
-use Umb\SystemBackup\Models\Facility;
+use Umb\SystemBackup\Models\System;
 use Umb\SystemBackup\Models\Upload;
 use Umb\SystemBackup\Models\User;
 
@@ -42,18 +42,18 @@ $router->mount('/user', function() use($router){
     });
 });
 
-$router->mount('/facility', function() use($router){
+$router->mount('/system', function() use($router){
     $router->get('/all', function(){
-        response(SUCCESS_RESPONSE_CODE, "Facilities", Facility::all());
+        response(SUCCESS_RESPONSE_CODE, "Systems", System::all());
     });
     $data = json_decode(file_get_contents('php://input'), true);
     $router->post('/create', function() use ($data){
         try{
-            $attributes = ['mfl_code', 'name', 'folder_id'];
+            $attributes = ['name', 'folder_id'];
             $missing = Utility::checkMissingAttributes($data, $attributes);
             throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
-            $facility = Facility::create($data);
-            response(SUCCESS_RESPONSE_CODE, "Facility", $facility);
+            $system = System::create($data);
+            response(SUCCESS_RESPONSE_CODE, "System", $system);
         } catch(\Throwable $th){
             Utility::logError(SUCCESS_RESPONSE_CODE, $th->getMessage());
             response(PRECONDITION_FAILED_ERROR_CODE, $th->getMessage());
@@ -62,12 +62,12 @@ $router->mount('/facility', function() use($router){
     });
     $router->post('/update/{id}', function($id) use ($data){
         try{
-            $attributes = ['mfl_code', 'name', 'folder_id'];
+            $attributes = ['name', 'folder_id'];
             $missing = Utility::checkMissingAttributes($data, $attributes);
             throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
-            $facility = Facility::findOrFail($id);
-            $facility->update($data);
-            response(SUCCESS_RESPONSE_CODE, "Facility", $facility);
+            $system = System::findOrFail($id);
+            $system->update($data);
+            response(SUCCESS_RESPONSE_CODE, "System", $system);
         } catch(\Throwable $th){
             Utility::logError(SUCCESS_RESPONSE_CODE, $th->getMessage());
             response(PRECONDITION_FAILED_ERROR_CODE, $th->getMessage());
@@ -87,9 +87,8 @@ $router->mount('/sharepoint', function() use($router){
 
 $router->post('/upload_file', function () {
     try {
-        if(!isset($_POST['facility_id'])) throw new Exception("Missing attributes: facility_id", -1);
-        // echo "The set facility id is : " . $_POST['facility_id'];
-        $facility = Facility::findOrFail($_POST['facility_id']);
+        if(!isset($_POST['system_id'])) throw new Exception("Missing attributes: system_id", -1);
+        $system = System::findOrFail($_POST['system_id']);
         if (isset($_FILES['upload_file'])) {
             $dest = $_ENV['PUBLIC_DIR'] . "temp/";
             if (!is_dir($dest)) {
@@ -98,7 +97,7 @@ $router->post('/upload_file', function () {
             $uploaded = Utility::uploadFile("", $dest);
             if($uploaded == '') throw new Exception("Error Processing Request", 1);
             Upload::create([
-                "facility_id" => $facility->id, "file_name" => $uploaded, "created_by" => 1
+                "system_id" => $system->id, "file_name" => $uploaded, "created_by" => 1
             ]);
         } else throw new Exception("Error Processing Request", 1);
     } catch (Throwable $th) {

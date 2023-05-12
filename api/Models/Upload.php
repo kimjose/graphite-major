@@ -5,13 +5,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class Upload extends Model{
 
-    protected $fillable = ['facility_id', 'file_name', 'created_by', 'uploaded_to_sharepoint'];
+    protected $fillable = ['system_id', 'file_name', 'created_by', 'uploaded_to_sharepoint'];
 
     /**
-     * @return Facility;
+     * @return System;
      */
-    public function facility() : Facility{
-        return Facility::find($this->facility_id);
+    public function system() : System{
+        return System::find($this->facility_id);
     }
 }
 
