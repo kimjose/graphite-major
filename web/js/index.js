@@ -40,3 +40,33 @@ const uploadFile = () => {
     xhr.send(formData);
 }
 
+const addUser = () => {
+    let divAddUser = document.getElementById('divAddUser')
+    let btnAddUser = document.getElementById('btnAddUser')
+
+    if(divAddUser.classList.contains('d-none')){
+        divAddUser.classList.remove('d-none')
+        btnAddUser.innerText = 'Close'
+    } else{
+        divAddUser.classList.add('d-none')
+        btnAddUser.innerText = 'Add User'
+    }
+}
+
+const saveUser = () => {
+    let inputLastName = document.querySelector('#inputLastName')
+    let inputFirstName = document.querySelector('#inputFirstName')
+    let inputMiddleName = document.querySelector('#inputMiddleName')
+    let inputPhoneNumber = document.querySelector('#inputPhoneNumber')
+    let inputEmail = document.querySelector('#inputEmail')
+    let selectAccessLevel = document.querySelector('#selectAccessLevel')
+    let btnSaveUser = document.querySelector('#btnSaveUser')
+
+    let lastName = inputLastName.value.trim()
+    let firstName = inputFirstName.value.trim()
+    let middleName = inputMiddleName.value.trim()
+    let phoneNumber = inputPhoneNumber.value.trim()
+    let email = inputEmail.value.trim()
+    let accessLevel = $(selectAccessLevel).val()
+}
+
