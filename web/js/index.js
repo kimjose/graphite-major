@@ -61,6 +61,7 @@ const saveUser = () => {
   let inputMiddleName = document.querySelector("#inputMiddleName");
   let inputPhoneNumber = document.querySelector("#inputPhoneNumber");
   let inputEmail = document.querySelector("#inputEmail");
+  let selectSystem = document.getElementById('selectSystem')
   let selectAccessLevel = document.querySelector("#selectAccessLevel");
   let btnSaveUser = document.querySelector("#btnSaveUser");
 
@@ -70,7 +71,46 @@ const saveUser = () => {
   let phoneNumber = inputPhoneNumber.value.trim();
   let email = inputEmail.value.trim();
   let accessLevel = $(selectAccessLevel).val();
+  let systemId = $(selectSystem).val()
+
+
+  fetch("../users/create", {
+    method: "POST",
+    body: JSON.stringify({
+      email: email,
+      access_level: accessLevel,
+      phone_number: phoneNumber,
+      first_name: firstName,
+      middle_name: middleName,
+      last_name: lastName
+    }),
+    headers: {
+      "content-type": "application/x-www-form-urlencoded",
+    },
+  })
+    .then((response) => response.json())
+    .then((response) => {
+      if (response.code === 200) {
+        loadTabContent()
+      } else throw new Error(response.message);
+    })
+    .catch((err) => {
+      toastr.error(err.message);
+    });
 };
+
+const accessLevelChanged = () => {
+  let divSelectSystem = document.getElementById('divSelectSystem')
+  let selectSystem = document.getElementById('selectSystem')
+  let selectAccessLevel = document.getElementById('selectAccessLevel')
+  let selected = $(selectAccessLevel).val();
+  if(selected === 'Program'){
+    if(!divSelectSystem.classList.contains('d-none')) divSelectSystem.classList.add('d-none')
+    $(selectSystem).val('')
+  } else{
+    if(divSelectSystem.classList.contains('d-none')) divSelectSystem.classList.remove('d-none')
+  }
+}
 
 const addSystem = () => {
   let btnAddSystem = document.getElementById("btnAddSystem");
@@ -123,3 +163,5 @@ const saveSystem = () => {
       toastr.error(err.message);
     });
 };
+
+

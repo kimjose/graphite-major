@@ -24,7 +24,7 @@ $systems = System::all();
                         <label for="inputFolderId">Folder Id</label>
                         <input type="text" class="form-control" id="inputFolderId" required name="first_name" placeholder="Folder Id">
                     </div>
-
+                    
                     <button type="submit" name="savebtn" id="btnSaveSystem" class="btn btn-primary" onclick="saveSystem()">Save
                         </button>
                     
