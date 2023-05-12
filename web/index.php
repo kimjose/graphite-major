@@ -1,9 +1,9 @@
 <?php
 
-use Umb\SystemBackup\Models\Facility;
+use Umb\SystemBackup\Models\System;
 
 require_once __DIR__ . "/../vendor/autoload.php";
-$facilities = Facility::all(); // TODO filter according to user logged in.
+$systems = System::all(); // TODO filter according to user logged in.
 ?>
 
 <!DOCTYPE html>
@@ -38,10 +38,10 @@ $facilities = Facility::all(); // TODO filter according to user logged in.
     <div class="container">
         <div class="col-3">
             <div class="form-group">
-                <select name="facility" id="selectFacility" class=" form-select" onchange="facilitySelectedChanged()">
-                    <option value="" selected hidden> Select Facility</option>
-                    <?php foreach ($facilities as $facility): ?>
-                        <option value="<?php echo $facility->id ?>"><?php echo $facility->name ?></option>
+                <select name="system" id="selectSystem" class=" form-select" onchange="systemSelectedChanged()">
+                    <option value="" selected hidden> Select System</option>
+                    <?php foreach ($systems as $system): ?>
+                        <option value="<?php echo $system->id ?>"><?php echo $system->name ?></option>
                     <?php endforeach; ?>
                 </select>
             </div>
@@ -68,7 +68,7 @@ $facilities = Facility::all(); // TODO filter according to user logged in.
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                         <li><a class="dropdown-item tab" id="tabUsers" href="#users" onclick="loadTabContent()">Users</a></li>
-                        <li><a class="dropdown-item tab" id="tabFacilities" href="#facilities" onclick="loadTabContent()">Facilities</a>
+                        <li><a class="dropdown-item tab" id="tabSystems" href="#systems" onclick="loadTabContent()">Systems</a>
                         </li>
                         <li>
                             <hr class="dropdown-divider">
@@ -85,14 +85,14 @@ $facilities = Facility::all(); // TODO filter according to user logged in.
 </section>
 
 <script>
-    const selectFacility = document.getElementById("selectFacility")
+    const selectSystem = document.getElementById("selectSystem")
     const tabs = document.querySelectorAll(".tab")
-    let facilityId = '';
+    let systemId = '';
     let currentId = window.location.hash
 
     function init() {
-        let selectedFacility = localStorage.getItem('selected_facility')
-        $(selectFacility).val(selectedFacility)
+        let selectedSystem = localStorage.getItem('selected_system')
+        $(selectSystem).val(selectedSystem)
         loadTabContent()
     }
 
@@ -100,8 +100,8 @@ $facilities = Facility::all(); // TODO filter according to user logged in.
         setTimeout(() => {
             let id = window.location.hash
             console.log(`The id is  ${id}`);
-            let selectedFacility = localStorage.getItem('selected_facility')
-            facilityId = selectedFacility;
+            let selectedSystem = localStorage.getItem('selected_system')
+            systemId = selectedSystem;
             $("#contentSection").html('')
             for(let i = 0; i < tabs.length; i++){
                 let tab = tabs[i]
@@ -110,7 +110,7 @@ $facilities = Facility::all(); // TODO filter according to user logged in.
             switch (id) {
                 case "#backups": {
                     document.querySelector("#tabBackups").classList.add('active')
-                    fetch(`backups?facility_id=${selectedFacility}`)
+                    fetch(`backups?system_id=${selectedSystem}`)
                         .then(response => {
                             return response.text()
                         })
@@ -138,9 +138,9 @@ $facilities = Facility::all(); // TODO filter according to user logged in.
                         })
                     break;
                 }
-                case "#facilities": {
-                    document.querySelector("#tabFacilities").classList.add('active')
-                    fetch(`facilities`)
+                case "#systems": {
+                    document.querySelector("#tabSystems").classList.add('active')
+                    fetch(`systems`)
                         .then(response => {
                             return response.text()
                         })
@@ -155,7 +155,7 @@ $facilities = Facility::all(); // TODO filter according to user logged in.
                 }
                 default: {
                     document.querySelector("#tabUpload").classList.add('active')
-                    fetch(`upload_file?facility_id=${selectedFacility}`)
+                    fetch(`upload_file?system_id=${selectedSystem}`)
                         .then(response => {
                             return response.text()
                         })
@@ -173,9 +173,9 @@ $facilities = Facility::all(); // TODO filter according to user logged in.
 
     }
 
-    function facilitySelectedChanged() {
-        let selected = $(selectFacility).val()
-        localStorage.setItem('selected_facility', selected)
+    function systemSelectedChanged() {
+        let selected = $(selectSystem).val()
+        localStorage.setItem('selected_system', selected)
         loadTabContent()
     }
 
