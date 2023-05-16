@@ -70,7 +70,7 @@
     "method": "POST",
     "sortNum": 40000,
     "created": "2023-05-05T10:54:04.583Z",
-    "modified": "2023-05-05T10:57:55.872Z",
+    "modified": "2023-05-12T06:26:10.506Z",
     "headers": [
       {
         "name": "Content-Type",
@@ -80,7 +80,7 @@
     "params": [],
     "body": {
       "type": "json",
-      "raw": "{\n  \"mfl_code\": 12345,\n  \"name\": \"Test Facility\",\n  \"folder_id\": \"\"\n}",
+      "raw": "{\n  \"mfl_code\": 12935,\n  \"name\": \"Embakasi Health Center \",\n  \"folder_id\": \"0167YEQWCH4C7YLKVT65F32V3FC7XA5Z62\"\n}",
       "form": []
     },
     "tests": []
@@ -304,7 +304,7 @@
     "method": "GET",
     "sortNum": 60000,
     "created": "2023-05-08T12:06:01.691Z",
-    "modified": "2023-05-12T13:32:50.960Z",
+    "modified": "2023-05-08T12:06:01.691Z",
     "headers": [
       {
         "name": "Authorization",
@@ -329,6 +329,9 @@
         "name": "Authorization",
         "value": "Bearer {{access_token}}"
       }
+    ],
+    "params": [],
+    "tests": []
     ],
     "params": [],
     "tests": []
