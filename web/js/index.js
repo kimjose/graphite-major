@@ -73,7 +73,7 @@ const saveUser = () => {
     let accessLevel = $(selectAccessLevel).val();
     let systemId = $(selectSystem).val()
 
-
+    startLoader()
     fetch("../user/create", {
         method: "POST",
         body: JSON.stringify({
@@ -90,11 +90,13 @@ const saveUser = () => {
     })
         .then((response) => response.json())
         .then((response) => {
+            endLoader()
             if (response.code === 200) {
                 loadTabContent()
             } else throw new Error(response.message);
         })
         .catch((err) => {
+            endLoader()
             toastr.error(err.message);
         });
 };
@@ -143,6 +145,7 @@ const saveSystem = () => {
         return;
     }
 
+    startLoader()
     fetch("../system/create", {
         method: "POST",
         body: JSON.stringify({
@@ -155,11 +158,13 @@ const saveSystem = () => {
     })
         .then((response) => response.json())
         .then((response) => {
+            endLoader()
             if (response.code === 200) {
                 loadTabContent()
             } else throw new Error(response.message);
         })
         .catch((err) => {
+            endLoader()
             toastr.error(err.message);
         });
 };
@@ -167,6 +172,7 @@ const saveSystem = () => {
 const deleteFile = (fileId, folderId) => {
     let r = confirm("Do you really want to delete the file? This action is irreversible")
     if (r){
+        startLoader()
         fetch(`../sharepoint/path/${folderId}/${fileId}`, {
             method: 'DELETE'
         })
@@ -174,12 +180,14 @@ const deleteFile = (fileId, folderId) => {
                 return response.json()
             })
             .then(response => {
+                endLoader()
                 if(response.code === 200){
                     toastr.success('Deleted successfully.')
                     loadTabContent()
                 } else throw new Error(response.message)
             })
             .catch(err => {
+                endLoader()
                 toastr.error(err.message)
             })
     }

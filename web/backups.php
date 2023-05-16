@@ -15,7 +15,7 @@ $c = 1;
         <div class="card-body">
             <h4>Backups</h4>
             <div class="table-responsive">
-                <table class="table table-bordered table-info">
+                <table id="tableBackups" class="table table-bordered table-info">
                     <thead>
                         <tr>
                             <th>#</th>

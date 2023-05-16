@@ -22,6 +22,10 @@ $systems = System::all(); // TODO filter according to user logged in.
     <link rel="stylesheet" href="plugins/select2/css/select2.min.css">
 
     <link rel="stylesheet" href="plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
+    <!-- DataTables -->
+    <link rel="stylesheet" href="plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
+    <link rel="stylesheet" href="plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
 
 
     <script src="js/bootstrap.bundle.min.js"></script>
@@ -37,6 +41,15 @@ $systems = System::all(); // TODO filter according to user logged in.
 
     <!-- Select2 -->
     <script src="plugins/select2/js/select2.full.min.js"></script>
+
+    <!-- DataTables  & Plugins -->
+    <script src="plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+    <script src="plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+    <script src="plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+    <script src="plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
+    <script src="plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
+
 
 </head>
 
@@ -87,12 +100,58 @@ $systems = System::all(); // TODO filter according to user logged in.
         </div>
     </nav>
     <!-- nav end -->
-    <section id="contentSection">
-    </section>
+    <div class="content" style="display: flex;">
+        <section id="contentSection">
+        </section>
 
+        <div class="loader-parent d-none">
+            <div class="loader"></div>
+        </div>
+    </div>
+    <style>
+        #contentSection {
+            width: 100%;
+        }
+
+        .loader-parent {
+            width: 100%;
+            height: 100%;
+            z-index: 10;
+            background-color: #000020;
+            position: absolute;
+            cursor: wait;
+            /* display: none; */
+            opacity: .4;
+        }
+
+        .loader {
+            border: 16px solid #f3f3f3;
+            /* Light grey */
+            border-top: 16px solid #3498db;
+            /* Blue */
+            border-radius: 50%;
+            width: 120px;
+            height: 120px;
+            animation: spin 2s linear infinite;
+            margin-left: calc(50% - 60px);
+            margin-top: 20%;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
     <script>
         const selectSystem = document.getElementById("selectSystem")
         const tabs = document.querySelectorAll(".tab")
+        const loader = document.querySelector(".loader-parent")
+
         let systemId = '';
         let currentId = window.location.hash
 
@@ -123,6 +182,7 @@ $systems = System::all(); // TODO filter according to user logged in.
                             .then(response => {
                                 // console.log('response is ' + response)
                                 $("#contentSection").html(response)
+                                $('#tableBackups').dataTable();
                             })
                             .catch(err => {
                                 toastr.error(err.message)
@@ -183,6 +243,14 @@ $systems = System::all(); // TODO filter according to user logged in.
             let selected = $(selectSystem).val()
             localStorage.setItem('selected_system', selected)
             loadTabContent()
+        }
+
+        function startLoader() {
+            if (loader.classList.contains('d-none')) loader.classList.remove('d-none')
+        }
+
+        function endLoader() {
+            if (!loader.classList.contains('d-none')) loader.classList.add('d-none')
         }
 
         init()
