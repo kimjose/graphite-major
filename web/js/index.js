@@ -82,7 +82,8 @@ const saveUser = () => {
             phone_number: phoneNumber,
             first_name: firstName,
             middle_name: middleName,
-            last_name: lastName
+            last_name: lastName,
+            system_ids: systemId
         }),
         headers: {
             "content-type": "application/x-www-form-urlencoded",

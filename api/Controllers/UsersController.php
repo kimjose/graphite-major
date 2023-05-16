@@ -12,7 +12,7 @@ class UsersController
     public function createUser($data)
     {
         try {
-            $attributes = ['access_level', 'first_name', 'middle_name', 'last_name', 'email', 'phone_number', 'facility_ids'];
+            $attributes = ['access_level', 'first_name', 'middle_name', 'last_name', 'email', 'phone_number', 'system_ids'];
             $missing = Utility::checkMissingAttributes($data, $attributes);
             throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
             $user = User::create($data);
@@ -27,7 +27,7 @@ class UsersController
     public function updateUser($id, $data)
     {
         try {
-            $attributes = ['access_level', 'first_name', 'middle_name', 'last_name', 'email', 'phone_number', 'facility_ids'];
+            $attributes = ['access_level', 'first_name', 'middle_name', 'last_name', 'email', 'phone_number', 'system_ids'];
             $missing = Utility::checkMissingAttributes($data, $attributes);
             throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
             $user = User::findOrFail($id);
