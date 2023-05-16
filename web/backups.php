@@ -6,6 +6,7 @@ require_once __DIR__ . "/../vendor/autoload.php";
 $systemId = $_GET['system_id'];
 $system = \Umb\SystemBackup\Models\System::find($systemId);
 // $files = DriveFile::all();
+/** DriveFile[] */
 $files = \Umb\SystemBackup\Models\DriveFile::where('folder_id', $system->folder_id)->get();
 $c = 1;
 ?>
@@ -32,7 +33,14 @@ $c = 1;
                                 <td><?php echo $file->created_date_time ?></td>
                                 <td><?php echo number_format((($file->size) / (1024 * 1000)), 2)  . ' MB'  ?></td>
                                 <td>
-                                    <a href="<?php echo $file->download_url ?>" target="_blank"> <i></i> Download</a>
+                                    <div class="row">
+                                        <div class="col-auto">
+                                            <a href="<?php echo $file->download_url ?>" target="_blank"> <i></i> Download</a>
+                                        </div>
+                                        <div class="col-auto">
+                                            <p class="delete-file" onclick="deleteFile('<?php echo $file->id  ?>', '<?php echo $file->folder_id ?>')">Delete</p>
+                                        </div>
+                                    </div>
                                 </td>
                             </tr>
                         <?php
@@ -44,3 +52,10 @@ $c = 1;
         </div>
     </div>
 </div>
+
+<style>
+    .delete-file{
+        color: red;
+        cursor: pointer;
+    }
+</style>

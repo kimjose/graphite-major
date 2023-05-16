@@ -9,5 +9,8 @@ class DriveFile extends Model{
 
     public $timestamps = false;
 
+    public $incrementing = false;
+    protected $casts = ['id' => 'string'];
+
 }
 

@@ -90,6 +90,7 @@ class SharepointController
             }
 
             curl_close($curl);
+            response(SUCCESS_RESPONSE_CODE, 'Success');
         } catch (\Throwable $th) {
             Utility::logError(SUCCESS_RESPONSE_CODE, $th->getMessage());
             response(PRECONDITION_FAILED_ERROR_CODE, $th->getMessage());

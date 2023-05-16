@@ -4,6 +4,7 @@ use Bramus\Router\Router;
 use Umb\SystemBackup\Controllers\SharepointController;
 use Umb\SystemBackup\Controllers\UsersController;
 use Umb\SystemBackup\Controllers\Utils\Utility;
+use Umb\SystemBackup\Models\DriveFile;
 use Umb\SystemBackup\Models\System;
 use Umb\SystemBackup\Models\Upload;
 use Umb\SystemBackup\Models\User;
@@ -86,6 +87,9 @@ $router->mount('/sharepoint', function() use($router){
     $router->delete('/path/{folder_id}/{id}', function($folder_id, $id) use($controller){
         $controller->deleteFile($folder_id, $id);
     });
+});
+$router->get('/all_files', function(){
+    response(SUCCESS_RESPONSE_CODE, '', DriveFile::all());
 });
 
 $router->post('/upload_file', function () {

@@ -374,5 +374,19 @@
     "headers": [],
     "params": [],
     "tests": []
+  },
+  {
+    "_id": "ef2b6047-faf2-45cd-8a06-53b5eaba548b",
+    "colId": "145d0ab0-3376-4a72-b482-566376da2b87",
+    "containerId": "",
+    "name": "all files",
+    "url": "{{base_url}}all_files",
+    "method": "GET",
+    "sortNum": 110000,
+    "created": "2023-05-16T07:07:55.981Z",
+    "modified": "2023-05-16T07:08:23.852Z",
+    "headers": [],
+    "params": [],
+    "tests": []
   }
 ]
