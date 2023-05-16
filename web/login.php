@@ -43,7 +43,7 @@
 <main id="main">
 
     <div class="align-self-center w-100">
-        <div id="login-center" class=" row justify-content-center">
+        <div id="login-center" class=" row justify-content-center m-2">
             <h4 class="text-white text-center"><b><?php echo $_ENV["APP_NAME"] ?? 'System Backup' ?></b></h4>
             <div id="divSendOtp" class="card col-md-6 col-sm-12">
                 <div class="card-body m-2">

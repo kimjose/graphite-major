@@ -11,7 +11,7 @@ class Upload extends Model{
      * @return System;
      */
     public function system() : System{
-        return System::find($this->facility_id);
+        return System::find($this->system_id);
     }
 }
 

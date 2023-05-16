@@ -74,7 +74,7 @@ const saveUser = () => {
   let systemId = $(selectSystem).val()
 
 
-  fetch("../users/create", {
+  fetch("../user/create", {
     method: "POST",
     body: JSON.stringify({
       email: email,

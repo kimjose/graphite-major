@@ -51,7 +51,7 @@ $systems = System::all();
 
                             <div class="form-group" id="divSelectSystem">
                                 <label for="selectSystem">Select System</label>
-                                <select class="form-control" id="selectSystem" name="system_ids">
+                                <select class="form-control" id="selectSystem" name="system_idse">
                                     <option selected hidden value="">Select System</option>
                                     <?php
                                     for ($i = 0; $i < sizeof($systems); $i++) :
