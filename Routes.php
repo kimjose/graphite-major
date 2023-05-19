@@ -102,11 +102,11 @@ $router->post('/upload_file', function () {
                 mkdir($dest);
             }
             $uploaded = Utility::uploadFile("", $dest);
-            if($uploaded == '') throw new Exception("Error Processing Request", 1);
+            if($uploaded == '') throw new Exception("Error Processing Request upload", 1);
             Upload::create([
                 "system_id" => $system->id, "file_name" => $uploaded, "created_by" => 1
             ]);
-        } else throw new Exception("Error Processing Request", 1);
+        } else throw new Exception("Error Processing Request no file", 1);
     } catch (Throwable $th) {
         Utility::logError(-1, $th->getMessage());
         response(PRECONDITION_FAILED_ERROR_CODE, $th->getMessage());

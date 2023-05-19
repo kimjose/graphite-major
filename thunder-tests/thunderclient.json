@@ -162,21 +162,29 @@
     "colId": "139fc6ea-abfe-46e2-92b9-66288b9773c4",
     "containerId": "",
     "name": "uploadFile",
-    "url": "https://graph.microsoft.com/v1.0/drives/b!0xyf-sxTkkqFel7v-6CHS1h2I9wcc1VItFkBUeMX15rPBkBcpOtiSZVc35A4dA--/items/0167YEQWE5AY7FYDW5ANCKOKICPBWLUIW6:/ess_hts_import.xlsx:/content",
+    "url": "https://graph.microsoft.com/v1.0/drives/b!0xyf-sxTkkqFel7v-6CHS1h2I9wcc1VItFkBUeMX15rPBkBcpOtiSZVc35A4dA--/items/0167YEQWAJ7PZMFVVG4JFYHI5534FBGDPA:/openmrs_20221114_v1830.sql.gz:/content",
     "method": "PUT",
     "sortNum": 10000,
     "created": "2023-05-08T12:06:01.685Z",
-    "modified": "2023-05-12T07:05:15.499Z",
+    "modified": "2023-05-19T10:39:45.515Z",
     "headers": [
       {
         "name": "Content-Type",
-        "value": "application/json",
+        "value": "application/x-7z-compressed",
         "isDisabled": true
       },
       {
         "name": "Authorization",
         "value": "Bearer {{access_token}}",
         "isDisabled": true
+      },
+      {
+        "name": "Accept-Encoding",
+        "value": "gzip, deflate, br"
+      },
+      {
+        "name": "Connection",
+        "value": "keep-alive"
       }
     ],
     "params": [],
@@ -184,7 +192,7 @@
       "type": "binary",
       "raw": "",
       "form": [],
-      "binary": "../api/Controllers/UsersController.php"
+      "binary": "../../../../../home/joseph/Documents/openmrs_20221114_v1830.sql.gz"
     },
     "auth": {
       "type": "bearer",

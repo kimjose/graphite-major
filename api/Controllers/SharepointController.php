@@ -132,25 +132,24 @@ class SharepointController
                         CURLOPT_ENCODING => "",
                         CURLOPT_MAXREDIRS => 10,
                         CURLOPT_TIMEOUT => 600,
+                        CURLOPT_FOLLOWLOCATION => true,
                         CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
                         CURLOPT_CUSTOMREQUEST => "PUT",
                         CURLOPT_POSTFIELDS => file_get_contents($dir . $fileName),
                         CURLOPT_HTTPHEADER => [
-                            "Accept: */*",
                             "Authorization: Bearer {$this->accessToken}",
-                            "Content-Type: application/octet-stream"
+                            "Content-Type: application/x-7z-compressed"
                         ],
                     ]);
 
                     $response = curl_exec($curl);
-                    $err = curl_error($curl);
+                    // $err = curl_error($curl);
 
                     curl_close($curl);
 
-                    if ($err) {
-                        throw new \Exception($err, -1);
-                    } else {
-                        unlink($dir . $upload->file_name);
+                        $r = json_decode($response, false);
+                        if ($r['error']) throw new \Exception($r->error -1);
+                        //unlink($dir . $upload->file_name);
                         $driveFile = json_decode($response, false);
                         $dstring = "@microsoft.graph.downloadUrl";
                         $downloadUrl = $driveFile->$dstring;
@@ -169,7 +168,7 @@ class SharepointController
                         $upload->update(['uploaded_to_sharepoint' => 1]);
                         // Go next
                         // echo $response;
-                    }
+                    
                 }
             }
             response(SUCCESS_RESPONSE_CODE, "Uploaded successfully");
