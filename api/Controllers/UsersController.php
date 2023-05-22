@@ -67,8 +67,10 @@ class UsersController
                 ]);
                 $message = "Hello {$user->first_name}, Your OTP for Systems backup is {$otp->code }. The OTP expires at {$otp->expires_at} ";
             }
-            Utility::sendMail($recipients, $subject, $message);
-            response(SUCCESS_RESPONSE_CODE, "Otp sent");
+            $res = Utility::sendMail($recipients, $subject, $message);
+            if($res)response(SUCCESS_RESPONSE_CODE, "Otp sent");
+            else throw new \Exception('Unable to send mail.', 1);
+            
         } catch (\Throwable $th) {
             Utility::logError(SUCCESS_RESPONSE_CODE, $th->getMessage());
             response(PRECONDITION_FAILED_ERROR_CODE, $th->getMessage());
