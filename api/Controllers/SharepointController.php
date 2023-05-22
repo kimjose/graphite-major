@@ -147,10 +147,11 @@ class SharepointController
 
                     curl_close($curl);
 
+print_r($response);
                     if ($err) {
                         throw new \Exception($err, -1);
                     } else {
-                        unlink($dir . $upload->file_name);
+                       // unlink($dir . $upload->file_name);
                         $driveFile = json_decode($response, false);
                         $dstring = "@microsoft.graph.downloadUrl";
                         $downloadUrl = $driveFile->$dstring;
