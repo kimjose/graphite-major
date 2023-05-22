@@ -3,6 +3,7 @@
 use Umb\SystemBackup\Models\System;
 
 require_once __DIR__ . "/../vendor/autoload.php";
+require_once __DIR__ . "/auth.php";
 $systems = System::all(); // TODO filter according to user logged in.
 ?>
 
