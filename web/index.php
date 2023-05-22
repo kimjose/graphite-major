@@ -4,7 +4,12 @@ use Umb\SystemBackup\Models\System;
 
 require_once __DIR__ . "/../vendor/autoload.php";
 require_once __DIR__ . "/auth.php";
-$systems = System::all(); // TODO filter according to user logged in.
+$systems = [];
+if ($currUser->access_level == 'Facility') {
+    $systems = System::whereIn('id', explode(',', $currUser->system_ids))->get();
+} else {
+    $systems = System::all();
+}
 ?>
 
 <!DOCTYPE html>
@@ -58,19 +63,17 @@ $systems = System::all(); // TODO filter according to user logged in.
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark static-top">
         <div class="container">
-            <div class="col-3">
+            <div class="col-lg-3 col-md-5 col-sm-6">
                 <div class="form-group">
+                    <label for="selectSystem">System/Facility</label>
                     <select name="system" id="selectSystem" class=" form-select" onchange="systemSelectedChanged()">
-                        <option value="" selected hidden> Select System</option>
+                        <option value="" selected hidden> Select System/Facility</option>
                         <?php foreach ($systems as $system) : ?>
                             <option value="<?php echo $system->id ?>"><?php echo $system->name ?></option>
                         <?php endforeach; ?>
                     </select>
                 </div>
             </div>
-            <a class="navbar-brand" href="#">
-                <img src="https://placeholder.pics/svg/150x50/888888/EEE/Logo" alt="..." height="36">
-            </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -82,18 +85,28 @@ $systems = System::all(); // TODO filter according to user logged in.
                     <li class="nav-item">
                         <a class="nav-link tab" id="tabBackups" href="#backups" onclick="loadTabContent()">Backups</a>
                     </li>
+                    <?php if ($currUser->access_level == 'Program') : ?>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                System Administration
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                                <li><a class="dropdown-item tab" id="tabUsers" href="#users" onclick="loadTabContent()">Users</a></li>
+                                <li><a class="dropdown-item tab" id="tabSystems" href="#systems" onclick="loadTabContent()">Systems</a>
+                                </li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                            </ul>
+                        </li>
+                    <?php endif; ?>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            System Administration
+                            <?php echo $currUser->last_name . ' ' . $currUser->first_name . ' ' . $currUser->middle_name ?>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item tab" id="tabUsers" href="#users" onclick="loadTabContent()">Users</a></li>
-                            <li><a class="dropdown-item tab" id="tabSystems" href="#systems" onclick="loadTabContent()">Systems</a>
-                            </li>
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
-                            <li><a class="dropdown-item" href="#">Something else here</a></li>
+                            <li><a class="dropdown-item tab" id="tabUsers" href="#users" onclick="logOut()">Log Out</a></li>
+
                         </ul>
                     </li>
                 </ul>
@@ -166,9 +179,13 @@ $systems = System::all(); // TODO filter according to user logged in.
             setTimeout(() => {
                 let id = window.location.hash
                 console.log(`The id is  ${id}`);
-                let selectedSystem = localStorage.getItem('selected_system')
+                let selectedSystem = $(selectSystem).val()
                 systemId = selectedSystem;
                 $("#contentSection").html('')
+                if (selectedSystem == '' || selectedSystem == null) {
+                    $("#contentSection").html('No system/facility selected...')
+                    return
+                }
                 for (let i = 0; i < tabs.length; i++) {
                     let tab = tabs[i]
                     if (tab.classList.contains('active')) tab.classList.remove('active')
@@ -252,6 +269,12 @@ $systems = System::all(); // TODO filter according to user logged in.
 
         function endLoader() {
             if (!loader.classList.contains('d-none')) loader.classList.add('d-none')
+        }
+
+        function logOut() {
+            fetch('./logout')
+                .then(() => window.location.reload())
+
         }
 
         init()

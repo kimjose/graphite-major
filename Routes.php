@@ -114,7 +114,7 @@ $router->post('/upload_file', function () {
     }
 });
 
-$router->all('/logout', function () {
+$router->all('/web/logout', function () {
     session_start();
     unset($_SESSION[$_ENV['SESSION_APP_NAME']]);
 });
