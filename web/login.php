@@ -156,7 +156,7 @@
                         setTimeout(() => {
                             divSendOtp.classList.add('d-none')
                             if (divVerifyOtp.classList.contains('d-none')) divVerifyOtp.classList.remove('d-none')
-                            titleMailSent.innerText = `An OTP has been sent to email ${email}. Enter it below to continue`
+                            titleMailSent.innerText = `An OTP has been sent to email ${email}. Enter it below to continue. Check spams if it is not in the default inbox.`
                         }, 997)
                     } else throw new Error(response.message)
                 })
