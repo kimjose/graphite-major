@@ -13,7 +13,14 @@ $c = 1;
 <div class="container-fluid mt-4">
     <div class="card">
         <div class="card-body">
-            <h4>Backups</h4>
+            <div class="row">
+                <div class="col-auto">
+                    <h4>Backups</h4>
+                </div>
+                <div class="col-auto mt-1">
+                    <p style="cursor: pointer; color: #00669A" onclick="reloadBackups()"> <i></i> Reload</p>
+                </div>
+            </div>
             <div class="table-responsive">
                 <table id="tableBackups" class="table table-bordered table-info">
                     <thead>
@@ -54,7 +61,7 @@ $c = 1;
 </div>
 
 <style>
-    .delete-file{
+    .delete-file {
         color: red;
         cursor: pointer;
     }

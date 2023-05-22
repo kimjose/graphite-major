@@ -193,3 +193,24 @@ const deleteFile = (fileId, folderId) => {
             })
     }
 }
+
+const reloadBackups = () => {
+    startLoader()
+    fetch(`../sharepoint/load_drive_files/${systemId}`, {
+        method: 'GET'
+    })
+    .then(response => {
+        return response.json()
+    })
+    .then(response => {
+        endLoader()
+        if(response.code === 200){
+            toastr.success('Reloaded successfully.')
+            loadTabContent()
+        } else throw new Error(response.message)
+    })
+    .catch(err => {
+        endLoader()
+        toastr.error(err.message)
+    })
+}
