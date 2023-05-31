@@ -45,8 +45,6 @@ if ($currUser->access_level == 'Facility') {
     <!-- Toastr -->
     <script src="plugins/toastr/toastr.min.js"></script>
 
-    <!-- Select2 -->
-    <script src="plugins/select2/js/select2.full.min.js"></script>
 
     <!-- DataTables  & Plugins -->
     <script src="plugins/datatables/jquery.dataTables.min.js"></script>
@@ -220,6 +218,7 @@ if ($currUser->access_level == 'Facility') {
                             .catch(err => {
                                 toastr.error(err.message)
                             })
+                            $('.select2').select2()
                         break;
                     }
                     case "#systems": {
@@ -280,6 +279,8 @@ if ($currUser->access_level == 'Facility') {
         init()
     </script>
 
+    <!-- Select2 -->
+    <script src="plugins/select2/js/select2.full.min.js"></script>
     <script src="js/index.js"></script>
 </body>
 

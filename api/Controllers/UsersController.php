@@ -12,9 +12,15 @@ class UsersController
     public function createUser($data)
     {
         try {
-            $attributes = ['access_level', 'first_name', 'middle_name', 'last_name', 'email', 'phone_number', 'system_ids'];
+            $system_ids = [];
+            $attributes = ['access_level', 'first_name', 'middle_name', 'last_name', 'email', 'phone_number'];
             $missing = Utility::checkMissingAttributes($data, $attributes);
             throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
+            extract($data);
+            $exists = User::where('email', $email)->first();
+            if($exists) throw new \Exception("User already exists...");
+            $ids = implode(',', $system_ids);
+            $data['system_ids'] = $ids;
             $user = User::create($data);
             response(SUCCESS_RESPONSE_CODE, "User created successfully.", $user);
         } catch (\Throwable $th) {

@@ -27,7 +27,7 @@ $router->mount('/user', function() use($router){
     $data = json_decode(file_get_contents('php://input'), true);
     $router->post('/create', function() use ($data){
         $controller = new UsersController();
-        $controller->createUser($data);
+        $controller->createUser($_POST);
     });
     $router->post('/update/{id}', function($id) use ($data){
         $controller = new UsersController();

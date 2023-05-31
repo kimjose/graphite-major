@@ -45,14 +45,13 @@ $systems = System::all();
                                 <select name="access_level" id="selectAccessLevel" class="form-control" onchange="accessLevelChanged()">
                                     <option value="" <?php echo $id == '' ? 'selected' : '' ?> hidden>Select level</option>
                                     <option value="Program">Program</option>
-                                    <option value="Facility">Facility</option>
+                                    <option value="Facility">Facility / Systems</option>
                                 </select>
                             </div>
 
                             <div class="form-group" id="divSelectSystem">
-                                <label for="selectSystem">Select System</label>
-                                <select class="form-control" id="selectSystem" name="system_idse">
-                                    <option selected hidden value="">Select System</option>
+                                <label for="selectSystemForm">Select System</label>
+                                <select class="select2" id="selectSystemForm" name="system_ids[]" multiple="multiple" data-placeholder="Select systems">
                                     <?php
                                     for ($i = 0; $i < sizeof($systems); $i++) :
                                         $system = $systems[$i];
@@ -109,3 +108,9 @@ $systems = System::all();
         margin-bottom: 10px;
     }
 </style>
+
+<script>
+    $(function(){
+        $('.select2').select2()
+    })
+</script>
