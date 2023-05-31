@@ -220,4 +220,16 @@ class SharepointController
             http_response_code(PRECONDITION_FAILED_ERROR_CODE);
         }
     }
+
+    public function deleteTask($systemId){
+        try{
+            $system = System::findOrFail($systemId);
+            
+
+        } catch(\Throwable $th){
+            Utility::logError(SUCCESS_RESPONSE_CODE, $th->getMessage());
+            response(PRECONDITION_FAILED_ERROR_CODE, $th->getMessage());
+            http_response_code(PRECONDITION_FAILED_ERROR_CODE);
+        }
+    }
 }

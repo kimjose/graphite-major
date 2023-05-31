@@ -87,6 +87,9 @@ $router->mount('/sharepoint', function() use($router){
     $router->delete('/path/{folder_id}/{id}', function($folder_id, $id) use($controller){
         $controller->deleteFile($folder_id, $id);
     });
+    $router->delete('/delete_task/{system_id}', function($system_id){
+        
+    });
 });
 $router->get('/all_files', function(){
     response(SUCCESS_RESPONSE_CODE, '', DriveFile::all());
