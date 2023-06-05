@@ -36,7 +36,7 @@ class SharepointController
         curl_close($curl);
     }
 
-    public function loadDriveFiles($systemId)
+    public function loadDriveFiles($systemId, $output = true)
     {
         try {
             /**
@@ -90,11 +90,13 @@ class SharepointController
             }
 
             curl_close($curl);
-            response(SUCCESS_RESPONSE_CODE, 'Success');
+            if ($output) response(SUCCESS_RESPONSE_CODE, 'Success');
         } catch (\Throwable $th) {
             Utility::logError(SUCCESS_RESPONSE_CODE, $th->getMessage());
-            response(PRECONDITION_FAILED_ERROR_CODE, $th->getMessage());
-            http_response_code(PRECONDITION_FAILED_ERROR_CODE);
+            if ($output) {
+                response(PRECONDITION_FAILED_ERROR_CODE, $th->getMessage());
+                http_response_code(PRECONDITION_FAILED_ERROR_CODE);
+            }
         }
     }
 
@@ -147,29 +149,29 @@ class SharepointController
 
                     curl_close($curl);
 
-                        $r = json_decode($response, false);
-                        if ($r['error']) throw new \Exception($r->error -1);
-                        //unlink($dir . $upload->file_name);
+                    $r = json_decode($response, false);
+                    if ($r['error']) throw new \Exception($r->error - 1);
+                    //unlink($dir . $upload->file_name);
 
-                        $driveFile = json_decode($response, false);
-                        $dstring = "@microsoft.graph.downloadUrl";
-                        $downloadUrl = $driveFile->$dstring;
-                        $createdAt = $driveFile->createdDateTime;
-                        $createdAt = str_replace('T', ' ', $createdAt);
-                        $createdAt = str_replace('Z', ' ', $createdAt);
-                        DriveFile::create([
-                            'name' => $driveFile->name,
-                            'id' => $driveFile->id,
-                            'folder_id' => $folderId,
-                            'web_url' => $driveFile->webUrl,
-                            'download_url' => $downloadUrl,
-                            'size' => $driveFile->size,
-                            'created_date_time' => $createdAt
-                        ]);
-                        $upload->update(['uploaded_to_sharepoint' => 1]);
-                        // Go next
-                        // echo $response;
-                    
+                    $driveFile = json_decode($response, false);
+                    $dstring = "@microsoft.graph.downloadUrl";
+                    $downloadUrl = $driveFile->$dstring;
+                    $createdAt = $driveFile->createdDateTime;
+                    $createdAt = str_replace('T', ' ', $createdAt);
+                    $createdAt = str_replace('Z', ' ', $createdAt);
+                    DriveFile::create([
+                        'name' => $driveFile->name,
+                        'id' => $driveFile->id,
+                        'folder_id' => $folderId,
+                        'web_url' => $driveFile->webUrl,
+                        'download_url' => $downloadUrl,
+                        'size' => $driveFile->size,
+                        'created_date_time' => $createdAt
+                    ]);
+                    $upload->update(['uploaded_to_sharepoint' => 1]);
+                    // Go next
+                    // echo $response;
+
                 }
             }
             response(SUCCESS_RESPONSE_CODE, "Uploaded successfully");
@@ -221,12 +223,42 @@ class SharepointController
         }
     }
 
-    public function deleteTask($systemId){
-        try{
+    public function deleteTask($systemId)
+    {
+        try {
             $system = System::findOrFail($systemId);
-            
+            $files = DriveFile::where('folder_id', 'LIKE', $system->folder_id)->orderBy('created_date_time', 'desc')->offset(10)->limit(10)->get();
+            foreach ($files as $file) {
+                $id = $file->id;
+                $curl = curl_init();
 
-        } catch(\Throwable $th){
+                curl_setopt_array($curl, [
+                    CURLOPT_URL => "https://graph.microsoft.com/v1.0/drives/b!0xyf-sxTkkqFel7v-6CHS1h2I9wcc1VItFkBUeMX15rPBkBcpOtiSZVc35A4dA--/items/{$id}",
+                    CURLOPT_RETURNTRANSFER => true,
+                    CURLOPT_ENCODING => "",
+                    CURLOPT_MAXREDIRS => 10,
+                    CURLOPT_TIMEOUT => 30,
+                    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                    CURLOPT_CUSTOMREQUEST => "DELETE",
+                    CURLOPT_HTTPHEADER => [
+                        "Accept: */*",
+                        "Authorization: Bearer {$this->accessToken}"
+                    ],
+                ]);
+
+                $response = curl_exec($curl);
+                $err = curl_error($curl);
+
+                curl_close($curl);
+
+                if ($err) {
+                    throw new \Exception("Error Processing Request" . $err, 1);
+                } else {
+                }
+            }
+            $this->loadDriveFiles($system->id, false);
+            response(SUCCESS_RESPONSE_CODE, "Delete task run successfully. Deleted " . sizeof($files) . " files...");
+        } catch (\Throwable $th) {
             Utility::logError(SUCCESS_RESPONSE_CODE, $th->getMessage());
             response(PRECONDITION_FAILED_ERROR_CODE, $th->getMessage());
             http_response_code(PRECONDITION_FAILED_ERROR_CODE);

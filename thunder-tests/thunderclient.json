@@ -398,5 +398,19 @@
     "headers": [],
     "params": [],
     "tests": []
+  },
+  {
+    "_id": "88a7a149-8738-4147-b248-af00178fd2ae",
+    "colId": "145d0ab0-3376-4a72-b482-566376da2b87",
+    "containerId": "",
+    "name": "Delete Task",
+    "url": "{{base_url}}sharepoint/delete_task/1",
+    "method": "DELETE",
+    "sortNum": 120000,
+    "created": "2023-06-05T07:41:38.943Z",
+    "modified": "2023-06-05T07:43:26.722Z",
+    "headers": [],
+    "params": [],
+    "tests": []
   }
 ]
