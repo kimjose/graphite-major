@@ -214,6 +214,7 @@ if ($currUser->access_level == 'Facility') {
                             .then(response => {
                                 // console.log('response is ' + response)
                                 $("#contentSection").html(response)
+                                $('#tableUsers').dataTable();
                             })
                             .catch(err => {
                                 toastr.error(err.message)
@@ -230,6 +231,7 @@ if ($currUser->access_level == 'Facility') {
                             .then(response => {
                                 // console.log('response is ' + response)
                                 $("#contentSection").html(response)
+                                $('#tableSystems').dataTable();
                             })
                             .catch(err => {
                                 toastr.error(err.message)

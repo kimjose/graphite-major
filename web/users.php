@@ -70,7 +70,7 @@ $systems = System::all();
                 </form>
             </div>
             <div class="table-responsive">
-                <table class="table table-bordered table-info table-striped">
+                <table class="table table-bordered table-info table-striped" id="tableUsers">
                     <thead>
                         <tr>
                             <th>#</th>
