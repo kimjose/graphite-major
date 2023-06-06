@@ -159,15 +159,18 @@ class SharepointController
                     $createdAt = $driveFile->createdDateTime;
                     $createdAt = str_replace('T', ' ', $createdAt);
                     $createdAt = str_replace('Z', ' ', $createdAt);
-                    DriveFile::create([
-                        'name' => $driveFile->name,
-                        'id' => $driveFile->id,
-                        'folder_id' => $folderId,
-                        'web_url' => $driveFile->webUrl,
-                        'download_url' => $downloadUrl,
-                        'size' => $driveFile->size,
-                        'created_date_time' => $createdAt
-                    ]);
+                    $exists = DriveFile::where('id', $driveFile->id)->where('folder_id', $folderId)->first();
+                    if (!$exists) {
+                        DriveFile::create([
+                            'name' => $driveFile->name,
+                            'id' => $driveFile->id,
+                            'folder_id' => $folderId,
+                            'web_url' => $driveFile->webUrl,
+                            'download_url' => $downloadUrl,
+                            'size' => $driveFile->size,
+                            'created_date_time' => $createdAt
+                        ]);
+                    }
                     $upload->update(['uploaded_to_sharepoint' => 1]);
                     // Go next
                     // echo $response;
