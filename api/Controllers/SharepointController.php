@@ -139,8 +139,7 @@ class SharepointController
                         CURLOPT_CUSTOMREQUEST => "PUT",
                         CURLOPT_POSTFIELDS => file_get_contents($dir . $fileName),
                         CURLOPT_HTTPHEADER => [
-                            "Authorization: Bearer {$this->accessToken}",
-                            "Content-Type: application/x-7z-compressed"
+                            "Authorization: Bearer {$this->accessToken}"
                         ],
                     ]);
 
@@ -151,7 +150,6 @@ class SharepointController
 
                     $r = json_decode($response, true);
                     if ($r['error']) throw new \Exception($r->error - 1);
-                    //unlink($dir . $upload->file_name);
 
                     $driveFile = json_decode($response, false);
                     $dstring = "@microsoft.graph.downloadUrl";
@@ -172,6 +170,7 @@ class SharepointController
                         ]);
                     }
                     $upload->update(['uploaded_to_sharepoint' => 1]);
+                    unlink($dir . $upload->file_name);
                     // Go next
                     // echo $response;
 
