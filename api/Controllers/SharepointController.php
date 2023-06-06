@@ -149,7 +149,7 @@ class SharepointController
 
                     curl_close($curl);
 
-                    $r = json_decode($response, false);
+                    $r = json_decode($response, true);
                     if ($r['error']) throw new \Exception($r->error - 1);
                     //unlink($dir . $upload->file_name);
 
