@@ -60,7 +60,7 @@ CREATE TABLE `otps` (
   PRIMARY KEY (`id`),
   KEY `fk_otp_user` (`user_id`),
   CONSTRAINT `fk_otp_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -116,13 +116,13 @@ CREATE TABLE `uploads` (
   `created_by` int NOT NULL,
   `uploaded_to_sharepoint` tinyint NOT NULL DEFAULT '0',
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` timestamp NOT NULL,
+  `updated_at` timestamp NULL,
   PRIMARY KEY (`id`),
   KEY `fk_upload_user` (`created_by`),
   KEY `fk_upload_system` (`system_id`),
   CONSTRAINT `fk_upload_system` FOREIGN KEY (`system_id`) REFERENCES `systems` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_upload_user` FOREIGN KEY (`created_by`) REFERENCES `users` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -166,7 +166,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'kimjose693@gmail.com','Program','0717845485','Joseph','Kimani','N',1,'1,2,3','2023-05-31 09:10:55','2023-05-05 10:38:30','2023-05-31 09:10:55'),(4,'jnkimani693@gmail.com','Facility','0717845485','Joseph','Kimani','Ngima',1,'4','2023-05-21 23:26:29','2023-05-16 13:49:52','2023-05-22 11:26:29'),(10,'jnkimani694@gmail.com','Facility','0717845485','Joseph','Kimani','Ngima',1,'3,5',NULL,'2023-05-31 09:18:39','2023-05-31 09:18:39'),(11,'jnkimani695@gmail.com','Program','0717845485','Joseph','Kimani','Ngima',1,'',NULL,'2023-05-31 09:21:33','2023-05-31 09:21:33');
+INSERT INTO `users` VALUES (1,'fkimonye@gmail.com','Program','0725377609','Francis','Kimonye','M',1,'1,2,3','2023-05-31 09:10:55','2023-05-05 10:38:30','2023-05-31 09:10:55'),(4,'kimonyefrancis@gmail.com','Facility','0735377609','Franc','Kimonye','M',1,'4','2023-05-21 23:26:29','2023-05-16 13:49:52','2023-05-22 11:26:29'),(10,'kimonyefrancis@gmail.com','Facility','0725377609','Francis','Kimonye','M',1,'3,5',NULL,'2023-05-31 09:18:39','2023-05-31 09:18:39'),(11,'fkimonye@gmail.com','Program','0725377609','Francis','Kimonye','M',1,'',NULL,'2023-05-31 09:21:33','2023-05-31 09:21:33');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
