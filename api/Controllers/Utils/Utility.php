@@ -53,7 +53,7 @@ class Utility
             $tmp_name = $_FILES['upload_file']['tmp_name'];
             $file_name = str_replace(" ", "_", $file_name);
             $file_name = str_replace("/", "_", $file_name);
-            $file_name = str_replace(".", "_" . time() . ".", $file_name);
+            // $file_name = str_replace(".", "_" . time() . ".", $file_name);
             $mF = ($newName == '' ? $file_name : $newName . $ext);
             $uploaded = move_uploaded_file($tmp_name, $uploadDir . $mF);
             if (!$uploaded) throw new \Exception("File not uploaded");
