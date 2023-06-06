@@ -77,7 +77,7 @@ $systems = System::all();
                             <th>Name</th>
                             <th>Email</th>
                             <th>Phone Number</th>
-                            <th>Systems</th>
+                            <th>Access Level/Systems</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -88,7 +88,17 @@ $systems = System::all();
                                 <td><?php echo $user->getNames() ?></td>
                                 <td><?php echo $user->email ?></td>
                                 <td><?php echo $user->phone_number ?></td>
-                                <td></td>
+                                <td>
+                                    <?php
+                                        if($user->access_level == 'Program') echo "<span class=\"badge badge-secondary rounded-pill\">Program</span>";
+                                        else{
+                                            $ids = explode(',', $user->system_ids);
+                                            foreach($systems as $system){
+                                                if(in_array($system->id, $ids)) echo "<span class=\"badge badge-warning m-1 rounded-pill\">$system->name</span>";
+                                            }
+                                        }
+                                    ?>
+                                </td>
                                 <td></td>
                             </tr>
                         <?php endforeach; ?>

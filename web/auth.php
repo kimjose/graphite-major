@@ -20,7 +20,7 @@ $redirect = str_replace('?', '&', $redirect);
 if (!isset($_SESSION[$_ENV['SESSION_APP_NAME']])) {
     http_response_code(401);
     Utility::logError(401, "User not authenticated,..");
-    header('Location: login.php?redirect='.$redirect);
+    header('Location: login?redirect='.$redirect);
 //    die(401);
 }
 $sessionData = $_SESSION[$_ENV['SESSION_APP_NAME']];
