@@ -5,6 +5,7 @@
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <title>Sharepoint Backups | Login</title>
+    <link rel="icon" href="img/cloud-storage.png" type="image/x-icon">
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <!-- Toastr -->
     <link rel="stylesheet" href="plugins/toastr/toastr.min.css">
