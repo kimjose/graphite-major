@@ -15,7 +15,7 @@ $systems = System::all();
             <div class="d-none" id="divAddSystem">
 
                 <form action="" method="POST" onsubmit="event.preventDefault();" id="formSystem">
-
+                    <input type="text" id="inputId" value="" hidden>
                     <div class="form-group">
                         <label for="inputName">System Name</label>
                         <input type="text" class="form-control" id="inputName" required name="name" placeholder="System Name">
@@ -24,17 +24,17 @@ $systems = System::all();
                         <label for="inputFolderId">Folder Id</label>
                         <input type="text" class="form-control" id="inputFolderId" required name="first_name" placeholder="Folder Id">
                     </div>
-                    
+
                     <button type="submit" name="savebtn" id="btnSaveSystem" class="btn btn-primary" onclick="saveSystem()">Save
-                        </button>
-                    
+                    </button>
+
                 </form>
             </div>
             <div class="table-responsive">
                 <table class="table table-bordered table-info table-striped" id="tableSystems">
                     <thead>
                         <tr>
-                            <th>#</th>
+                            <th>_ID</th>
                             <th>Name</th>
                             <th>Folder Id</th>
                             <th>Actions</th>
@@ -43,10 +43,14 @@ $systems = System::all();
                     <tbody>
                         <?php foreach ($systems as $system) : ?>
                             <tr>
-                                <td></td>
+                                <td><?php echo $system->id ?></td>
                                 <td><?php echo $system->name ?></td>
                                 <td><?php echo $system->folder_id ?></td>
-                                <td></td>
+                                <td>
+                                    <p class="" id="link_edit_system" onclick='editSystem(<?php echo $system->id ?>, "<?php echo $system->name ?>", "<?php echo $system->folder_id ?>")'>
+                                       Edit </p>
+
+                                </td>
                             </tr>
                         <?php endforeach; ?>
                     </tbody>
@@ -63,5 +67,10 @@ $systems = System::all();
         border-bottom-left-radius: 5px;
         border-bottom-right-radius: 5px;
         margin-bottom: 10px;
+    }
+
+    #link_edit_system{
+        color: #009610;
+        cursor: pointer;
     }
 </style>

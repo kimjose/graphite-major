@@ -1,3 +1,4 @@
+
 const uploadFile = () => {
   let inputFile = document.getElementById("inputFile");
   let progressBar = document.getElementById("progress");
@@ -161,8 +162,10 @@ const accessLevelChanged = () => {
 const addSystem = () => {
   let btnAddSystem = document.getElementById("btnAddSystem");
   let divAddSystem = document.getElementById("divAddSystem");
+  let inputId = document.getElementById("inputId");
 
   if (divAddSystem.classList.contains("d-none")) {
+    inputId.value = ""
     divAddSystem.classList.remove("d-none");
     btnAddSystem.innerText = "Close";
   } else {
@@ -171,11 +174,33 @@ const addSystem = () => {
   }
 };
 
+const editSystem = (id, name, folderId) =>{
+  let btnAddSystem = document.getElementById("btnAddSystem");
+  let divAddSystem = document.getElementById("divAddSystem");
+  let inputId = document.getElementById("inputId");
+  let inputName = document.getElementById("inputName");
+  let inputFolderId = document.getElementById("inputFolderId");
+
+  if (divAddSystem.classList.contains("d-none")) {
+    divAddSystem.classList.remove("d-none");
+    btnAddSystem.innerText = "Close";
+  } else {
+    divAddSystem.classList.add("d-none");
+    btnAddSystem.innerText = "Add User";
+  }
+  inputId.value = id
+  inputName.value = name 
+  inputFolderId.value = folderId
+
+}
+
 const saveSystem = () => {
+  let inputId = document.getElementById("inputId");
   let inputName = document.getElementById("inputName");
   let inputFolderId = document.getElementById("inputFolderId");
   let btnSaveSystem = document.getElementById("btnSaveSystem");
 
+  let _id = inputId.value.trim()
   let name = inputName.value.trim();
   if (name == "") {
     toastr.error("name is required");
@@ -190,7 +215,7 @@ const saveSystem = () => {
   }
 
   startLoader();
-  fetch("../system/create", {
+  fetch(_id == '' ? "../system/create" : `../system/update/${_id}`, {
     method: "POST",
     body: JSON.stringify({
       name: name,
