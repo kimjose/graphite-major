@@ -412,5 +412,35 @@
     "headers": [],
     "params": [],
     "tests": []
+  },
+  {
+    "_id": "e23d5ce7-7588-48fa-adc7-0b9cac200708",
+    "colId": "145d0ab0-3376-4a72-b482-566376da2b87",
+    "containerId": "",
+    "name": "upload file",
+    "url": "{{base_url}}upload_file",
+    "method": "POST",
+    "sortNum": 130000,
+    "created": "2023-06-07T07:38:40.533Z",
+    "modified": "2023-06-07T07:41:39.355Z",
+    "headers": [],
+    "params": [],
+    "body": {
+      "type": "formdata",
+      "raw": "",
+      "form": [
+        {
+          "name": "system_id",
+          "value": "1"
+        }
+      ],
+      "files": [
+        {
+          "name": "upload_file",
+          "value": "../../../../../home/joseph/Downloads/teamviewer_15.40.8_amd64.deb"
+        }
+      ]
+    },
+    "tests": []
   }
 ]
