@@ -98,16 +98,22 @@ $router->get('/all_files', function(){
 $router->post('/upload_file', function () {
     try {
         if(!isset($_POST['system_id'])) throw new Exception("Missing attributes: system_id", -1);
+        $createdBy = $_POST['created_by'] ?? 1;
         $system = System::findOrFail($_POST['system_id']);
         if (isset($_FILES['upload_file'])) {
             $dest = $_ENV['PUBLIC_DIR'] . "temp/";
             if (!is_dir($dest)) {
                 mkdir($dest);
             }
-            $uploaded = Utility::uploadFile("", $dest);
+
+            $file_name = $_FILES['upload_file']['name'];
+            $file_name = str_replace(" ", "_", $file_name);
+            $file_name = str_replace("/", "_", $file_name);
+            $file_name = $system->id . "_" . $file_name;
+            $uploaded = Utility::uploadFile($file_name, $dest);
             if($uploaded == '') throw new Exception("Error Processing Request upload", 1);
             Upload::create([
-                "system_id" => $system->id, "file_name" => $uploaded, "created_by" => 1
+                "system_id" => $system->id, "file_name" => $uploaded, "created_by" => $createdBy
             ]);
         } else throw new Exception("Error Processing Request no file", 1);
     } catch (Throwable $th) {

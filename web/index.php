@@ -164,6 +164,8 @@ if ($currUser->access_level == 'Facility') {
         const selectSystem = document.getElementById("selectSystem")
         const tabs = document.querySelectorAll(".tab")
         const loader = document.querySelector(".loader-parent")
+        const user = JSON.parse('<?php echo $currUser ?>')
+        // console.log(user);
 
         let systemId = '';
         let currentId = window.location.hash
