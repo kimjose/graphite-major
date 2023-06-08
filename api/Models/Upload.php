@@ -13,5 +13,13 @@ class Upload extends Model{
     public function system() : System{
         return System::find($this->system_id);
     }
+
+    /**
+     * @return User
+     */
+    public function createdBy() : User{
+        return User::find($this->created_by);
+    }
+    
 }
 

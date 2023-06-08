@@ -1,5 +1,16 @@
 <?php
- $systemId = $_GET['system_id'];
+require_once __DIR__ . "/../vendor/autoload.php";
+
+use Umb\SystemBackup\Models\Upload;
+
+$systemId = $_GET['system_id'];
+
+$pendingBadge = "<span class=\"badge badge-warning rounded-pill\">Pending</span>";
+$completedBadge = "<span class=\"badge badge-success rounded-pill\">Completed</span>";
+
+/**@var Upload[] */
+$uploads = Upload::where('system_id', $systemId)->orderBy('created_at', 'desc')->limit(10)->get();
+//  print_r($uploads);
 ?>
 
 <div class="container-fluid mt-4">
@@ -15,6 +26,36 @@
                 <input type="submit" value="Upload" class="btn btn-primary mt-3" onclick="uploadFile()">
 
             </form>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h4>Upload Logs</h4>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-info table-bordered table-stripped">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>File Name</th>
+                            <th>Uploaded By</th>
+                            <th>Uploaded to Sharepoint</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach($uploads as $upload): ?>
+                            <tr>
+                                <td></td>
+                                <td><?php echo $upload->file_name ?></td>
+                                <td><?php echo $upload->createdBy()->getNames() ?></td>
+                                <td><?php echo $upload->uploaded_to_sharepoint == 1 ? $completedBadge : $pendingBadge ?></td>
+                            </tr>
+                            <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
