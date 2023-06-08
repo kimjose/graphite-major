@@ -12,6 +12,7 @@ const uploadFile = () => {
   let formData = new FormData();
   formData.append("upload_file", file);
   formData.append("system_id", systemId);
+  formData.append('created_by', user.id)
 
   const xhr = new XMLHttpRequest();
   xhr.open("POST", "../upload_file", true);
