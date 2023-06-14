@@ -22,7 +22,14 @@ $systems = System::all();
                     </div>
                     <div class="form-group">
                         <label for="inputFolderId">Folder Id</label>
-                        <input type="text" class="form-control" id="inputFolderId" required name="first_name" placeholder="Folder Id">
+                        <div>
+                            <div class="float-right btn" style="margin-top: -35px; text-align: right; color:#09ADF1" onclick="toggleGetFolderId()">Get Folder ID</div>
+                            <div id="divGetFolderId" class="d-none">
+                                <input type="text" class="form-control" id="inputFolderPath" required name="path" placeholder="Folder Path">
+                                <buttton class="btn btn-outline-secondary mt-2" onclick="getFolderId()">Get Id</buttton>
+                            </div>
+                        </div>
+                        <input type="text" class="form-control" id="inputFolderId" required name="folder_id" placeholder="Folder Id">
                     </div>
 
                     <button type="submit" name="savebtn" id="btnSaveSystem" class="btn btn-primary" onclick="saveSystem()">Save
@@ -48,7 +55,7 @@ $systems = System::all();
                                 <td><?php echo $system->folder_id ?></td>
                                 <td>
                                     <p class="" id="link_edit_system" onclick='editSystem(<?php echo $system->id ?>, "<?php echo $system->name ?>", "<?php echo $system->folder_id ?>")'>
-                                       Edit </p>
+                                        Edit </p>
 
                                 </td>
                             </tr>
@@ -69,8 +76,14 @@ $systems = System::all();
         margin-bottom: 10px;
     }
 
-    #link_edit_system{
+    #link_edit_system {
         color: #009610;
         cursor: pointer;
+    }
+
+    #divGetFolderId {
+        margin: 8px;
+        border: #000054 dotted 1px;
+        padding: 5px;
     }
 </style>

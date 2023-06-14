@@ -84,6 +84,9 @@ $router->mount('/sharepoint', function() use($router){
     $router->get('/upload_queued_files', function() use($controller){
         $controller->uploadQueuedFiles();
     });
+    $router->get('/folder_id', function() use ($controller){
+        $controller->getFolderId($_GET['path']);
+    });
     $router->delete('/path/{folder_id}/{id}', function($folder_id, $id) use($controller){
         $controller->deleteFile($folder_id, $id);
     });

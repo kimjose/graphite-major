@@ -270,4 +270,43 @@ class SharepointController
             http_response_code(PRECONDITION_FAILED_ERROR_CODE);
         }
     }
+
+    public function getFolderId($path)
+    {
+        try {
+            if ($path == null || $path == '') throw new \Exception("Error Processing Request :path is missing", 1);
+
+            $path = str_replace(' ', '%20', $path);
+
+            $curl = curl_init();
+
+            curl_setopt_array($curl, [
+                CURLOPT_URL => "https://graph.microsoft.com/v1.0/drives/b!0xyf-sxTkkqFel7v-6CHS1h2I9wcc1VItFkBUeMX15rPBkBcpOtiSZVc35A4dA--/root:/SYSTEM%20BACKUP/EVENT%20MANAGER/{$path}",
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => "",
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 30,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => "GET",
+                CURLOPT_HTTPHEADER => [
+                    "Accept: */*",
+                    "Authorization: Bearer {$this->accessToken}",
+                    "User-Agent: Thunder Client (https://www.thunderclient.com)"
+                ],
+            ]);
+
+            $response = curl_exec($curl);
+
+            curl_close($curl);
+
+            $r = json_decode($response, true);
+            if ($r['error']) throw new \Exception($r['error']['message'], -1);
+            $data['id'] = $r['id'];
+            response(SUCCESS_RESPONSE_CODE, "ID retrieved successfully.", $data);
+        } catch (\Throwable $th) {
+            Utility::logError(SUCCESS_RESPONSE_CODE, $th->getMessage());
+            response(PRECONDITION_FAILED_ERROR_CODE, $th->getMessage());
+            http_response_code(PRECONDITION_FAILED_ERROR_CODE);
+        }
+    }
 }

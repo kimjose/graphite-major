@@ -171,7 +171,7 @@ const addSystem = () => {
     btnAddSystem.innerText = "Close";
   } else {
     divAddSystem.classList.add("d-none");
-    btnAddSystem.innerText = "Add User";
+    btnAddSystem.innerText = "Add System";
   }
 };
 
@@ -238,6 +238,41 @@ const saveSystem = () => {
       toastr.error(err.message);
     });
 };
+
+const toggleGetFolderId = () => {
+  let divGetFolderId = document.getElementById('divGetFolderId')
+  console.log('Clicked...');
+  if(divGetFolderId.classList.contains('d-none')){
+    divGetFolderId.classList.remove('d-none')
+  } else{
+    divGetFolderId.classList.add('d-none')
+  }
+}
+
+const getFolderId = () => {
+  let inputFolderPath = document.getElementById('inputFolderPath')
+  let inputFolderId = document.getElementById('inputFolderId')
+  let path = inputFolderPath.value.trim()
+  if(path == ''){
+    toastr.error('Enter a valid path.')
+    return
+  }
+  toastr.info('Getting ID...')
+  fetch(`../sharepoint/folder_id?path=${path}`)
+  .then(response => {
+    return response.json();
+  })
+  .then(response =>{
+    if(response.code == 200){
+      toastr.success(response.message);
+      let data = response.data
+      inputFolderId.value = data.id
+    } else throw new Error(response.message)
+  })
+  .catch(err => {
+    toastr.error(err.message)
+  })
+}
 
 const deleteFile = (fileId, folderId) => {
   let r = confirm(

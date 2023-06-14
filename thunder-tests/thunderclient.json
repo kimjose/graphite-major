@@ -296,7 +296,7 @@
     "method": "GET",
     "sortNum": 50000,
     "created": "2023-05-08T12:06:01.690Z",
-    "modified": "2023-05-18T07:37:48.242Z",
+    "modified": "2023-06-14T06:01:50.157Z",
     "headers": [],
     "params": [],
     "auth": {
@@ -442,5 +442,32 @@
       ]
     },
     "tests": []
+  },
+  {
+    "_id": "240d5127-d8a2-48f1-9632-0f5e6f4dbab7",
+    "colId": "145d0ab0-3376-4a72-b482-566376da2b87",
+    "containerId": "",
+    "name": "Get Folder ID",
+    "url": "{{base_url}}sharepoint/folder_id?path=CRIMS",
+    "method": "GET",
+    "sortNum": 140000,
+    "created": "2023-06-14T06:07:05.740Z",
+    "modified": "2023-06-14T10:46:41.817Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "path",
+        "value": "CRIMS",
+        "isPath": false
+      }
+    ],
+    "tests": [
+      {
+        "type": "res-code",
+        "custom": "",
+        "action": "equal",
+        "value": "200"
+      }
+    ]
   }
 ]
