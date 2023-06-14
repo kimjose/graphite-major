@@ -114,66 +114,70 @@ class SharepointController
             /** @var Upload[] */
             $uploads = Upload::where('uploaded_to_sharepoint', 0)->get();
             foreach ($uploads as $upload) {
-                $dir = $_ENV['PUBLIC_DIR'] . 'temp/';
-                if (!is_file($dir . $upload->file_name)) {
-                    $upload->delete();
-                } else {
-                    $system = $upload->system();
-                    if ($system == null) {
+                try {
+                    $dir = $_ENV['PUBLIC_DIR'] . 'temp/';
+                    if (!is_file($dir . $upload->file_name)) {
                         $upload->delete();
-                        break;
-                    }
-                    $folderId = $system->folder_id;
-                    $fileName = $upload->file_name;
+                    } else {
+                        $system = $upload->system();
+                        if ($system == null) {
+                            $upload->delete();
+                            break;
+                        }
+                        $folderId = $system->folder_id;
+                        $fileName = $upload->file_name;
 
-                    $curl = curl_init();
+                        $curl = curl_init();
 
-                    curl_setopt_array($curl, [
-                        CURLOPT_URL => "https://graph.microsoft.com/v1.0/drives/b!0xyf-sxTkkqFel7v-6CHS1h2I9wcc1VItFkBUeMX15rPBkBcpOtiSZVc35A4dA--/items/{$folderId}:/{$fileName}:/content",
-                        CURLOPT_RETURNTRANSFER => true,
-                        CURLOPT_ENCODING => "",
-                        CURLOPT_MAXREDIRS => 10,
-                        CURLOPT_TIMEOUT => 600,
-                        CURLOPT_FOLLOWLOCATION => true,
-                        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                        CURLOPT_CUSTOMREQUEST => "PUT",
-                        CURLOPT_POSTFIELDS => file_get_contents($dir . $fileName),
-                        CURLOPT_HTTPHEADER => [
-                            "Authorization: Bearer {$this->accessToken}"
-                        ],
-                    ]);
-
-                    $response = curl_exec($curl);
-                    // $err = curl_error($curl);
-
-                    curl_close($curl);
-
-                    $r = json_decode($response, true);
-                    if ($r['error']) throw new \Exception($r->error - 1);
-
-                    $driveFile = json_decode($response, false);
-                    $dstring = "@microsoft.graph.downloadUrl";
-                    $downloadUrl = $driveFile->$dstring;
-                    $createdAt = $driveFile->createdDateTime;
-                    $createdAt = str_replace('T', ' ', $createdAt);
-                    $createdAt = str_replace('Z', ' ', $createdAt);
-                    $exists = DriveFile::where('id', $driveFile->id)->where('folder_id', $folderId)->first();
-                    if (!$exists) {
-                        DriveFile::create([
-                            'name' => $driveFile->name,
-                            'id' => $driveFile->id,
-                            'folder_id' => $folderId,
-                            'web_url' => $driveFile->webUrl,
-                            'download_url' => $downloadUrl,
-                            'size' => $driveFile->size,
-                            'created_date_time' => $createdAt
+                        curl_setopt_array($curl, [
+                            CURLOPT_URL => "https://graph.microsoft.com/v1.0/drives/b!0xyf-sxTkkqFel7v-6CHS1h2I9wcc1VItFkBUeMX15rPBkBcpOtiSZVc35A4dA--/items/{$folderId}:/{$fileName}:/content",
+                            CURLOPT_RETURNTRANSFER => true,
+                            CURLOPT_ENCODING => "",
+                            CURLOPT_MAXREDIRS => 10,
+                            CURLOPT_TIMEOUT => 600,
+                            CURLOPT_FOLLOWLOCATION => true,
+                            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                            CURLOPT_CUSTOMREQUEST => "PUT",
+                            CURLOPT_POSTFIELDS => file_get_contents($dir . $fileName),
+                            CURLOPT_HTTPHEADER => [
+                                "Authorization: Bearer {$this->accessToken}"
+                            ],
                         ]);
-                    }
-                    $upload->update(['uploaded_to_sharepoint' => 1]);
-                    unlink($dir . $upload->file_name);
-                    // Go next
-                    // echo $response;
 
+                        $response = curl_exec($curl);
+                        // $err = curl_error($curl);
+
+                        curl_close($curl);
+
+                        $r = json_decode($response, true);
+                        if ($r['error']) throw new \Exception($r->error - 1);
+
+                        $driveFile = json_decode($response, false);
+                        $dstring = "@microsoft.graph.downloadUrl";
+                        $downloadUrl = $driveFile->$dstring;
+                        $createdAt = $driveFile->createdDateTime;
+                        $createdAt = str_replace('T', ' ', $createdAt);
+                        $createdAt = str_replace('Z', ' ', $createdAt);
+                        $exists = DriveFile::where('id', $driveFile->id)->where('folder_id', $folderId)->first();
+                        if (!$exists) {
+                            DriveFile::create([
+                                'name' => $driveFile->name,
+                                'id' => $driveFile->id,
+                                'folder_id' => $folderId,
+                                'web_url' => $driveFile->webUrl,
+                                'download_url' => $downloadUrl,
+                                'size' => $driveFile->size,
+                                'created_date_time' => $createdAt
+                            ]);
+                        }
+                        $upload->update(['uploaded_to_sharepoint' => 1]);
+                        unlink($dir . $upload->file_name);
+                        // Go next
+                        // echo $response;
+
+                    }
+                } catch (\Throwable $th) {
+                    Utility::logError(312, $th->getMessage() . " Upload is " . $upload->id);
                 }
             }
             response(SUCCESS_RESPONSE_CODE, "Uploaded successfully");
