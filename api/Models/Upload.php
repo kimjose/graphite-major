@@ -5,7 +5,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Upload extends Model{
 
-    protected $fillable = ['system_id', 'file_name', 'created_by', 'uploaded_to_sharepoint'];
+    protected $fillable = ['system_id', 'file_name', 'created_by', 'uploaded_to_sharepoint', 'upload_error'];
 
     /**
      * @return System;

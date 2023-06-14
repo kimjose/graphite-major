@@ -34,7 +34,7 @@ class Utility
         $data = date("Y-m-d H:i:s ", time());
         $data .= "      Code " . $code;
         $data .= "      Message " . $message;
-        $data .= "      ClientAddr " . $_SERVER["REMOTE_ADDR"];
+        $data .= "      ClientAddr " . PHP_SAPI !== 'cli' ? $_SERVER["REMOTE_ADDR"] : '';
         $data .= "\n";
         fwrite($handle, $data);
         fclose($handle);

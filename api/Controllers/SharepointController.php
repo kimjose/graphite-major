@@ -150,7 +150,13 @@ class SharepointController
                         curl_close($curl);
 
                         $r = json_decode($response, true);
-                        if ($r['error']) throw new \Exception($r->error - 1);
+                        if ($r['error']){
+                            $errorMessage = $r['error']['message'];
+                            $upload->update([
+                                'upload_error' => $errorMessage
+                            ]);
+                            throw new \Exception($errorMessage );
+                        }
 
                         $driveFile = json_decode($response, false);
                         $dstring = "@microsoft.graph.downloadUrl";
