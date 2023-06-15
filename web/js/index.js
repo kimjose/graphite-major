@@ -1,4 +1,3 @@
-
 const uploadFile = () => {
   let inputFile = document.getElementById("inputFile");
   let progressBar = document.getElementById("progress");
@@ -12,7 +11,7 @@ const uploadFile = () => {
   let formData = new FormData();
   formData.append("upload_file", file);
   formData.append("system_id", systemId);
-  formData.append('created_by', user.id)
+  formData.append("created_by", user.id);
 
   const xhr = new XMLHttpRequest();
   xhr.open("POST", "../upload_file", true);
@@ -47,9 +46,11 @@ const uploadFile = () => {
 const addUser = () => {
   let divAddUser = document.getElementById("divAddUser");
   let btnAddUser = document.getElementById("btnAddUser");
+  let inputUserId = document.querySelector("#inputUserId");
 
   if (divAddUser.classList.contains("d-none")) {
     divAddUser.classList.remove("d-none");
+    inputUserId.value = "";
     btnAddUser.innerText = "Close";
   } else {
     divAddUser.classList.add("d-none");
@@ -57,51 +58,111 @@ const addUser = () => {
   }
 };
 
-const saveUser = () => {
+const editUser = (user) => {
+  let divAddUser = document.getElementById("divAddUser");
+  let btnAddUser = document.getElementById("btnAddUser");
+  let inputUserId = document.querySelector("#inputUserId");
   let inputLastName = document.querySelector("#inputLastName");
   let inputFirstName = document.querySelector("#inputFirstName");
   let inputMiddleName = document.querySelector("#inputMiddleName");
   let inputPhoneNumber = document.querySelector("#inputPhoneNumber");
   let inputEmail = document.querySelector("#inputEmail");
-  let selectSystem = document.getElementById("selectSystem");
+  let selectSystem = document.getElementById("selectSystemForm");
+  let selectAccessLevel = document.querySelector("#selectAccessLevel");
+
+  if (divAddUser.classList.contains("d-none")) {
+    divAddUser.classList.remove("d-none");
+    btnAddUser.innerText = "Close";
+  }
+  inputUserId.value = user.id;
+  inputLastName.value = user.last_name;
+  inputFirstName.value = user.first_name;
+  inputMiddleName.value = user.middle_name;
+  inputPhoneNumber.value = user.phone_number;
+  inputEmail.value = user.email;
+  $(selectAccessLevel).val(user.access_level);
+  selectAccessLevel.dispatchEvent(new Event("change"));
+  if (user.access_level === "Facility") {
+    let systems = user.system_ids.split(",");
+    let options = selectSystem.options;
+
+    if ($(selectSystem).data("select2")) {
+      // $(selectSystem).select2("destroy");
+    }
+    $(selectSystem).select2("destroy");
+    console.log(systems);
+    for (let i = 0; i < options.length; i++) {
+      let option = options[i];
+      let optValue = option.value;
+      console.log(`The value is ${optValue}`);
+      let indexOf = systems.indexOf(optValue);
+      console.log(`The index of is ${indexOf}`);
+      if (indexOf != -1) option.selected = true;
+      else option.selected = false;
+      console.log("Is selected " + option.selected);
+    }
+    console.dir(selectSystem.options);
+    $(function () {
+      $(selectSystem).select2();
+    });
+  } else {
+    let options = selectSystem.options;
+    $(selectSystem).select2("destroy");
+    for (let i = 0; i < options.length; i++) {
+      let option = options[i];
+      option.selected = false;
+    }
+    $(selectSystem).select2();
+  }
+};
+
+const saveUser = () => {
+  let inputUserId = document.querySelector("#inputUserId");
+  let inputLastName = document.querySelector("#inputLastName");
+  let inputFirstName = document.querySelector("#inputFirstName");
+  let inputMiddleName = document.querySelector("#inputMiddleName");
+  let inputPhoneNumber = document.querySelector("#inputPhoneNumber");
+  let inputEmail = document.querySelector("#inputEmail");
+  let selectSystem = document.getElementById("selectSystemForm");
   let selectAccessLevel = document.querySelector("#selectAccessLevel");
   let btnSaveUser = document.querySelector("#btnSaveUser");
 
+  let id = inputUserId.value.trim()
   let lastName = inputLastName.value.trim();
-  if(lastName === ''){
-    toastr.error("Last name is required")
-    inputLastName.focus()
-    return
+  if (lastName === "") {
+    toastr.error("Last name is required");
+    inputLastName.focus();
+    return;
   }
   let firstName = inputFirstName.value.trim();
-  if(firstName === ''){
-    toastr.error("First name is required")
-    inputFirstName.focus()
-    return
+  if (firstName === "") {
+    toastr.error("First name is required");
+    inputFirstName.focus();
+    return;
   }
   let middleName = inputMiddleName.value.trim();
-  if(middleName === ''){
-    toastr.error("Last name is required")
-    inputMiddleName.focus()
-    return
+  if (middleName === "") {
+    toastr.error("Last name is required");
+    inputMiddleName.focus();
+    return;
   }
   let phoneNumber = inputPhoneNumber.value.trim();
-  if(phoneNumber.length < 10){
-    toastr.error("Invalid phone number")
-    inputPhoneNumber.focus()
-    return
+  if (phoneNumber.length < 10) {
+    toastr.error("Invalid phone number");
+    inputPhoneNumber.focus();
+    return;
   }
   let email = inputEmail.value.trim();
-  if(lastName === ''){
-    toastr.error("Last name is required")
-    inputLastName.focus()
-    return
+  if (lastName === "") {
+    toastr.error("Last name is required");
+    inputLastName.focus();
+    return;
   }
   let accessLevel = $(selectAccessLevel).val();
-  if(accessLevel === ''){
-    toastr.error("Access level is required")
-    selectAccessLevel.focus()
-    return
+  if (accessLevel === "") {
+    toastr.error("Access level is required");
+    selectAccessLevel.focus();
+    return;
   }
   let systemIds = [];
 
@@ -110,7 +171,7 @@ const saveUser = () => {
 
   startLoader();
   $.ajax({
-    url: "../user/create",
+    url: id === '' ? "../user/create" : `../user/update/${id}`,
     data: formData,
     cache: false,
     contentType: false,
@@ -125,7 +186,7 @@ const saveUser = () => {
           loadTabContent();
         }, 800);
       } else {
-        endLoader()
+        endLoader();
         toastr.error(resp.message);
       }
     },
@@ -166,7 +227,7 @@ const addSystem = () => {
   let inputId = document.getElementById("inputId");
 
   if (divAddSystem.classList.contains("d-none")) {
-    inputId.value = ""
+    inputId.value = "";
     divAddSystem.classList.remove("d-none");
     btnAddSystem.innerText = "Close";
   } else {
@@ -175,7 +236,7 @@ const addSystem = () => {
   }
 };
 
-const editSystem = (id, name, folderId) =>{
+const editSystem = (id, name, folderId) => {
   let btnAddSystem = document.getElementById("btnAddSystem");
   let divAddSystem = document.getElementById("divAddSystem");
   let inputId = document.getElementById("inputId");
@@ -189,11 +250,10 @@ const editSystem = (id, name, folderId) =>{
     divAddSystem.classList.add("d-none");
     btnAddSystem.innerText = "Add User";
   }
-  inputId.value = id
-  inputName.value = name 
-  inputFolderId.value = folderId
-
-}
+  inputId.value = id;
+  inputName.value = name;
+  inputFolderId.value = folderId;
+};
 
 const saveSystem = () => {
   let inputId = document.getElementById("inputId");
@@ -201,7 +261,7 @@ const saveSystem = () => {
   let inputFolderId = document.getElementById("inputFolderId");
   let btnSaveSystem = document.getElementById("btnSaveSystem");
 
-  let _id = inputId.value.trim()
+  let _id = inputId.value.trim();
   let name = inputName.value.trim();
   if (name == "") {
     toastr.error("name is required");
@@ -216,7 +276,7 @@ const saveSystem = () => {
   }
 
   startLoader();
-  fetch(_id == '' ? "../system/create" : `../system/update/${_id}`, {
+  fetch(_id == "" ? "../system/create" : `../system/update/${_id}`, {
     method: "POST",
     body: JSON.stringify({
       name: name,
@@ -240,39 +300,39 @@ const saveSystem = () => {
 };
 
 const toggleGetFolderId = () => {
-  let divGetFolderId = document.getElementById('divGetFolderId')
-  console.log('Clicked...');
-  if(divGetFolderId.classList.contains('d-none')){
-    divGetFolderId.classList.remove('d-none')
-  } else{
-    divGetFolderId.classList.add('d-none')
+  let divGetFolderId = document.getElementById("divGetFolderId");
+  console.log("Clicked...");
+  if (divGetFolderId.classList.contains("d-none")) {
+    divGetFolderId.classList.remove("d-none");
+  } else {
+    divGetFolderId.classList.add("d-none");
   }
-}
+};
 
 const getFolderId = () => {
-  let inputFolderPath = document.getElementById('inputFolderPath')
-  let inputFolderId = document.getElementById('inputFolderId')
-  let path = inputFolderPath.value.trim()
-  if(path == ''){
-    toastr.error('Enter a valid path.')
-    return
+  let inputFolderPath = document.getElementById("inputFolderPath");
+  let inputFolderId = document.getElementById("inputFolderId");
+  let path = inputFolderPath.value.trim();
+  if (path == "") {
+    toastr.error("Enter a valid path.");
+    return;
   }
-  toastr.info('Getting ID...')
+  toastr.info("Getting ID...");
   fetch(`../sharepoint/folder_id?path=${path}`)
-  .then(response => {
-    return response.json();
-  })
-  .then(response =>{
-    if(response.code == 200){
-      toastr.success(response.message);
-      let data = response.data
-      inputFolderId.value = data.id
-    } else throw new Error(response.message)
-  })
-  .catch(err => {
-    toastr.error(err.message)
-  })
-}
+    .then((response) => {
+      return response.json();
+    })
+    .then((response) => {
+      if (response.code == 200) {
+        toastr.success(response.message);
+        let data = response.data;
+        inputFolderId.value = data.id;
+      } else throw new Error(response.message);
+    })
+    .catch((err) => {
+      toastr.error(err.message);
+    });
+};
 
 const deleteFile = (fileId, folderId) => {
   let r = confirm(

@@ -31,7 +31,7 @@ $router->mount('/user', function() use($router){
     });
     $router->post('/update/{id}', function($id) use ($data){
         $controller = new UsersController();
-        $controller->updateUser($id, $data);
+        $controller->updateUser($id, $_POST);
     });
     $router->post('/request-otp', function() use($data){
         $controller = new UsersController();

@@ -17,6 +17,7 @@ $systems = System::all();
 
                 <form action="" method="POST" onsubmit="event.preventDefault();" id="formUser">
                     <div class="row">
+                        <input type="text" id="inputUserId" hidden>
                         <div class="col-md-6 col-sm-12">
                             <div class="form-group">
                                 <label for="inputLastName">Last Name</label>
@@ -90,16 +91,19 @@ $systems = System::all();
                                 <td><?php echo $user->phone_number ?></td>
                                 <td>
                                     <?php
-                                        if($user->access_level == 'Program') echo "<span class=\"badge badge-secondary rounded-pill\">Program</span>";
-                                        else{
-                                            $ids = explode(',', $user->system_ids);
-                                            foreach($systems as $system){
-                                                if(in_array($system->id, $ids)) echo "<span class=\"badge badge-warning m-1 rounded-pill\">$system->name</span>";
-                                            }
+                                    if ($user->access_level == 'Program') echo "<span class=\"badge badge-secondary rounded-pill\">Program</span>";
+                                    else {
+                                        $ids = explode(',', $user->system_ids);
+                                        foreach ($systems as $system) {
+                                            if (in_array($system->id, $ids)) echo "<span class=\"badge badge-warning m-1 rounded-pill\">$system->name</span>";
                                         }
+                                    }
                                     ?>
                                 </td>
-                                <td></td>
+                                <td>
+                                    <p class="" id="link_edit_user" onclick='editUser(<?php echo json_encode($user) ?>)'>
+                                        Edit </p>
+                                </td>
                             </tr>
                         <?php endforeach; ?>
                     </tbody>
@@ -117,10 +121,14 @@ $systems = System::all();
         border-bottom-right-radius: 5px;
         margin-bottom: 10px;
     }
+    #link_edit_user {
+        color: #009610;
+        cursor: pointer;
+    }
 </style>
 
 <script>
-    $(function(){
+    $(function() {
         $('.select2').select2()
     })
 </script>
