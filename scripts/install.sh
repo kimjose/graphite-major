@@ -11,7 +11,26 @@ then
     echo "PHP installed successful...";
 else
     echo "PHP is already installed."
+fi
 
+# Directory path to create and check
+directory="/CONNECT/KenyaEMR/FacilityName"
+
+# Create the directory if it doesn't exist
+if [ ! -d "$directory" ]; then
+  mkdir -p "$directory"
+  echo "Directory created: $directory"
+  sudo chmod -R 700 /CONNECT/KenyaEMR/FacilityName
+else
+  echo "Directory already exists: $directory"
+fi
+
+# Create scheduler
+if
+    sudo crontab -l | { cat; echo "0  17 * * * php /root/system-backup/upload_file.php"; } | crontab -
+    echo "scheduler created successfully..."
+else
+    echo "scheduler not created."
 fi
 # Check if PHP is installed
 #if [ -x "$(command -v php)" ]; then
