@@ -30,7 +30,7 @@ class Utility
             mkdir($_ENV['LOGS_DIR']);
         }
         $today = date_format(date_create(), 'Ymd');
-        $handle = fopen($_ENV['LOGS_DIR'] . "errors_" . $today . ".txt", 'a');
+        $handle = fopen($_ENV['LOGS_DIR'] . "errors.txt", 'a');
         $data = date("Y-m-d H:i:s ", time());
         $data .= "      Code " . $code;
         $data .= "      Message " . $message;
