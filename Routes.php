@@ -112,6 +112,7 @@ $router->post('/upload_file', function () {
             $file_name = $_FILES['upload_file']['name'];
             $file_name = str_replace(" ", "_", $file_name);
             $file_name = str_replace("/", "_", $file_name);
+            $file_name = str_replace(":", "", $file_name);
             $file_name = $system->id . "_" . $file_name;
             $uploaded = Utility::uploadFile($file_name, $dest);
             if($uploaded == '') throw new Exception("Error Processing Request upload", 1);

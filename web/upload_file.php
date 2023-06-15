@@ -50,7 +50,7 @@ $uploads = Upload::where('system_id', $systemId)->orderBy('created_at', 'desc')-
                                 <td></td>
                                 <td><?php echo $upload->file_name ?></td>
                                 <td><?php echo $upload->createdBy()->getNames() ?></td>
-                                <td><?php echo $upload->uploaded_to_sharepoint == 1 ? $completedBadge : $pendingBadge ?> <p class="text-danger"><?php echo $upload->upload_error ?></p> </td>
+                                <td><?php echo $upload->uploaded_to_sharepoint == 1 ? $completedBadge : $pendingBadge ?> <p class="text-danger <?php echo ($upload->upload_error != null && $upload->upload_error != '') ? '' : 'd-none' ?>"><?php echo $upload->upload_error ?></p> </td>
                             </tr>
                             <?php endforeach; ?>
                     </tbody>
