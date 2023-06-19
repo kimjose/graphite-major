@@ -8,7 +8,8 @@ try {
     $dbUser = "dhis";
     $dbPassword = "dhis";
 
-    $fileName = $backUpDir . $dbName . '_' . $date . '.sql.gz';
+    $fileName = $backUpDir . $dbName . '_' . $date . '.sql';
+    $fileNameFinal = $fileName . '.7z';
     $files = scandir($backUpDir);
     for ($i = 2; $i < sizeof($files); $i++) {
         $file = $files[$i];
@@ -18,22 +19,25 @@ try {
             unlink($backUpDir . $file);
         }
     }
-    $cmd = "pg_dump --dbname=postgresql://{$dbUser}:{$dbPassword}@127.0.0.1:5432/{$dbName} | gzip > {$fileName}";
+    echo " \033[93m  Backing up database and compressing \033[0m ⏳⏳⏳⏳ \n";
+    $cmd = "pg_dump --dbname=postgresql://{$dbUser}:{$dbPassword}@127.0.0.1:5432/{$dbName} > {$fileName}";
+    $cmd .= " && 7z a -t7z {$fileNameFinal} {$fileName} ";
+//echo $cmd; return;
     //echo 'Executing -> ' . $cmd . " \n";
     if (substr(php_uname(), 0, 7) == "Windows") {
         $r = pclose(popen("start /B " . $cmd, "r"));
     } else {
         exec($cmd . " ");
     }
-
+    echo "\033[96m Backup completed. \033[93m Now uploading file \033[0m {$fileNameFinal} \n ";
 
     require('get_token.php');
-    $filePath = $fileName;
+    $filePath = $fileNameFinal;
     $curl = curl_init();
 
 
     curl_setopt_array($curl, array(
-        CURLOPT_URL => "https://graph.microsoft.com/v1.0/drives/b!0xyf-sxTkkqFel7v-6CHS1h2I9wcc1VItFkBUeMX15rPBkBcpOtiSZVc35A4dA--/items/0167YEQWE5AY7FYDW5ANCKOKICPBWLUIW6:/{$fileName}:/content",
+        CURLOPT_URL => "https://graph.microsoft.com/v1.0/drives/b!0xyf-sxTkkqFel7v-6CHS1h2I9wcc1VItFkBUeMX15rPBkBcpOtiSZVc35A4dA--/items/0167YEQWE5AY7FYDW5ANCKOKICPBWLUIW6:/{$fileNameFinal}:/content",
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_ENCODING => '',
         CURLOPT_MAXREDIRS => 10,
@@ -47,7 +51,7 @@ try {
         ),
     ));
 
-//    $response = curl_exec($curl);
+    $response = curl_exec($curl);
 
     curl_close($curl);
     echo $response;
