@@ -92,6 +92,7 @@ if ($currUser->access_level == 'Facility') {
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                                 <li><a class="dropdown-item tab" id="tabUsers" href="#users" onclick="loadTabContent()">Users</a></li>
                                 <li><a class="dropdown-item tab" id="tabSystems" href="#systems" onclick="loadTabContent()">Systems</a>
+                                <li><a class="dropdown-item tab" id="tabPrograms" href="#programs" onclick="loadTabContent()">Programs</a>
                                 </li>
                                 <li>
                                     <hr class="dropdown-divider">
@@ -235,6 +236,22 @@ if ($currUser->access_level == 'Facility') {
                                 // console.log('response is ' + response)
                                 $("#contentSection").html(response)
                                 $('#tableSystems').dataTable();
+                            })
+                            .catch(err => {
+                                toastr.error(err.message)
+                            })
+                        break;
+                    }
+                    case "#programs": {
+                        document.querySelector("#tabPrograms").classList.add('active')
+                        fetch(`programs`)
+                            .then(response => {
+                                return response.text()
+                            })
+                            .then(response => {
+                                // console.log('response is ' + response)
+                                $("#contentSection").html(response)
+                                $('#tablePrograms').dataTable();
                             })
                             .catch(err => {
                                 toastr.error(err.message)

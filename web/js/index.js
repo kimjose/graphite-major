@@ -391,3 +391,90 @@ const reloadBackups = () => {
       toastr.error(err.message);
     });
 };
+
+/******************** Programs Section ---- */
+const addProgram = () => {
+  let btnAddProgram = document.getElementById("btnAddProgram");
+  let divAddProgram = document.getElementById("divAddProgram");
+  let inputId = document.getElementById("inputId");
+
+  if (divAddProgram.classList.contains("d-none")) {
+    inputId.value = "";
+    divAddProgram.classList.remove("d-none");
+    btnAddProgram.innerText = "Close";
+  } else {
+    document.getElementById("formProgram").reset();
+    divAddProgram.classList.add("d-none");
+    btnAddProgram.innerText = "Add Program";
+  }
+}
+
+const saveProgram = () => {
+  let inputId = document.getElementById("inputId");
+  let inputName = document.getElementById("inputName");
+  let inputRootFolderPath = document.getElementById("inputRootFolderPath");
+  let btnSaveProgram = document.getElementById("btnSaveProgram");
+
+  let _id = inputId.value.trim();
+  let name = inputName.value.trim();
+  if (name == "") {
+    toastr.error("name is required");
+    inputName.focus();
+    return;
+  }
+  let folderPath = inputRootFolderPath.value.trim();
+  if (folderPath == "") {
+    toastr.error("Folder path is required");
+    inputRootFolderPath.focus();
+    return;
+  }
+  if(!folderPath.endsWith('/')){
+    toastr.error("Folder path should end with '/' ");
+    inputRootFolderPath.focus();
+    return;
+  }
+
+  startLoader();
+  fetch(_id == "" ? "../program/create" : `../program/update/${_id}`, {
+    method: "POST",
+    body: JSON.stringify({
+      name: name,
+      root_folder_path: folderPath,
+    }),
+    headers: {
+      "content-type": "application/x-www-form-urlencoded",
+    },
+  })
+    .then((response) => response.json())
+    .then((response) => {
+      endLoader();
+      if (response.code === 200) {
+        loadTabContent();
+      } else throw new Error(response.message);
+    })
+    .catch((err) => {
+      endLoader();
+      toastr.error(err.message);
+    });
+};
+
+const editProgram = (id, name, folderPath) => {
+  let btnAddProgram = document.getElementById("btnAddProgram");
+  let divAddProgram = document.getElementById("divAddProgram");
+  let inputId = document.getElementById("inputId");
+  let inputName = document.getElementById("inputName");
+  let inputRootFolderPath = document.getElementById("inputRootFolderPath");
+
+  if (divAddProgram.classList.contains("d-none")) {
+    divAddProgram.classList.remove("d-none");
+    btnAddProgram.innerText = "Close";
+  } else {
+    divAddProgram.classList.add("d-none");
+    btnAddProgram.innerText = "Add User";
+  }
+  inputId.value = id;
+  inputName.value = name;
+  inputRootFolderPath.value = folderPath;
+};
+
+/******************** Programs Section end ---- */
