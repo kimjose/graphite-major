@@ -53,6 +53,16 @@ const addUser = () => {
     inputUserId.value = "";
     btnAddUser.innerText = "Close";
   } else {
+    document.getElementById("formUser").reset();
+    selectAccessLevel.dispatchEvent(new Event("change"));
+    let selectSystem = document.getElementById("selectSystemForm");
+    let options = selectSystem.options;
+    $(selectSystem).select2("destroy");
+    for (let i = 0; i < options.length; i++) {
+      let option = options[i];
+      option.selected = false;
+    }
+    $(selectSystem).select2();
     divAddUser.classList.add("d-none");
     btnAddUser.innerText = "Add User";
   }
@@ -127,7 +137,7 @@ const saveUser = () => {
   let selectAccessLevel = document.querySelector("#selectAccessLevel");
   let btnSaveUser = document.querySelector("#btnSaveUser");
 
-  let id = inputUserId.value.trim()
+  let id = inputUserId.value.trim();
   let lastName = inputLastName.value.trim();
   if (lastName === "") {
     toastr.error("Last name is required");
@@ -171,7 +181,7 @@ const saveUser = () => {
 
   startLoader();
   $.ajax({
-    url: id === '' ? "../user/create" : `../user/update/${id}`,
+    url: id === "" ? "../user/create" : `../user/update/${id}`,
     data: formData,
     cache: false,
     contentType: false,
@@ -231,6 +241,7 @@ const addSystem = () => {
     divAddSystem.classList.remove("d-none");
     btnAddSystem.innerText = "Close";
   } else {
+    document.getElementById("formSystem").reset();
     divAddSystem.classList.add("d-none");
     btnAddSystem.innerText = "Add System";
   }
