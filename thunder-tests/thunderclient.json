@@ -80,7 +80,7 @@
     "params": [],
     "body": {
       "type": "json",
-      "raw": "{\n  \"mfl_code\": 12935,\n  \"name\": \"Embakasi Health Center \",\n  \"folder_id\": \"0167YEQWCH4C7YLKVT65F32V3FC7XA5Z62\"\n}",
+      "raw": "{\n  \"program_id\": 2,\n  \"name\": \"Embakasi Health Center \",\n  \"folder_id\": \"0167YEQWCH4C7YLKVT65F32V3FC7XA5Z62\"\n}",
       "form": []
     },
     "tests": []
@@ -104,7 +104,7 @@
     "params": [],
     "body": {
       "type": "json",
-      "raw": "{\n  \"mfl_code\": 12745,\n  \"name\": \"Test Facility\",\n  \"folder_id\": \"\"\n}",
+      "raw": "{\n  \"program_id\": 2,\n  \"name\": \"Test Facility\",\n  \"folder_id\": \"\"\n}",
       "form": []
     },
     "tests": []
