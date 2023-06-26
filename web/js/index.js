@@ -79,6 +79,7 @@ const editUser = (user) => {
   let inputEmail = document.querySelector("#inputEmail");
   let selectSystem = document.getElementById("selectSystemForm");
   let selectAccessLevel = document.querySelector("#selectAccessLevel");
+  let selectProgram = document.querySelector("#selectProgram");
 
   if (divAddUser.classList.contains("d-none")) {
     divAddUser.classList.remove("d-none");
@@ -91,6 +92,7 @@ const editUser = (user) => {
   inputPhoneNumber.value = user.phone_number;
   inputEmail.value = user.email;
   $(selectAccessLevel).val(user.access_level);
+  $(selectProgram).val(user.program_id);
   selectAccessLevel.dispatchEvent(new Event("change"));
   if (user.access_level === "Facility") {
     let systems = user.system_ids.split(",");
@@ -135,6 +137,7 @@ const saveUser = () => {
   let inputEmail = document.querySelector("#inputEmail");
   let selectSystem = document.getElementById("selectSystemForm");
   let selectAccessLevel = document.querySelector("#selectAccessLevel");
+  let selectProgram = document.querySelector("#selectProgram");
   let btnSaveUser = document.querySelector("#btnSaveUser");
 
   let id = inputUserId.value.trim();
@@ -173,6 +176,12 @@ const saveUser = () => {
     toastr.error("Access level is required");
     selectAccessLevel.focus();
     return;
+  }
+  let program = $(selectProgram).val()
+  if(program === ""){
+    toastr.error("Program is required.")
+    selectProgram.focus()
+    return
   }
   let systemIds = [];
 
@@ -263,7 +272,7 @@ const editSystem = (id, programId, name, folderId) => {
     btnAddSystem.innerText = "Add User";
   }
   inputId.value = id;
-  $(selectProgram).val(programId)
+  $(selectProgram).val(programId);
   inputName.value = name;
   inputFolderId.value = folderId;
 };
@@ -276,11 +285,11 @@ const saveSystem = () => {
   let btnSaveSystem = document.getElementById("btnSaveSystem");
 
   let _id = inputId.value.trim();
-  let program = $(selectProgram).val()
-  if(program == ""){
-    toastr.error("Select a valid program")
-    selectProgram.focus()
-    return
+  let program = $(selectProgram).val();
+  if (program == "") {
+    toastr.error("Select a valid program");
+    selectProgram.focus();
+    return;
   }
   let name = inputName.value.trim();
   if (name == "") {
@@ -417,7 +426,7 @@ const addProgram = () => {
     divAddProgram.classList.add("d-none");
     btnAddProgram.innerText = "Add Program";
   }
-}
+};
 
 const saveProgram = () => {
   let inputId = document.getElementById("inputId");
@@ -438,7 +447,7 @@ const saveProgram = () => {
     inputRootFolderPath.focus();
     return;
   }
-  if(!folderPath.endsWith('/')){
+  if (!folderPath.endsWith("/")) {
     toastr.error("Folder path should end with '/' ");
     inputRootFolderPath.focus();
     return;

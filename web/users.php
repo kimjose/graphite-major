@@ -2,10 +2,12 @@
 
 use Umb\SystemBackup\Models\User;
 use Umb\SystemBackup\Models\System;
+use Umb\SystemBackup\Models\Program;
 
 require_once __DIR__ . "/../vendor/autoload.php";
 $users = User::all();
-$systems = System::all();
+$systems = System::all();// TODO Refactor according to user access level
+$programs = Program::all();
 ?>
 
 <div class="container-fluid mt-4">
@@ -50,6 +52,15 @@ $systems = System::all();
                                 </select>
                             </div>
 
+                            <div class="form-group">
+                                <label for="selectProgram">Program</label>
+                                <select name="program_id" id="selectProgram" class="form-control" required>
+                                    <option value="" selected hidden>Select Program</option>
+                                    <?php foreach ($programs as $program) : ?>
+                                        <option value="<?php echo $program->id ?>"><?php echo $program->name ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
                             <div class="form-group" id="divSelectSystem">
                                 <label for="selectSystemForm">Select System</label>
                                 <select class="select2" id="selectSystemForm" name="system_ids[]" multiple="multiple" data-placeholder="Select systems">
@@ -79,6 +90,7 @@ $systems = System::all();
                             <th>Email</th>
                             <th>Phone Number</th>
                             <th>Access Level/Systems</th>
+                            <th>Program</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -100,6 +112,7 @@ $systems = System::all();
                                     }
                                     ?>
                                 </td>
+                                <td><?php echo $user->program()->name ?></td>
                                 <td>
                                     <p class="" id="link_edit_user" onclick='editUser(<?php echo json_encode($user) ?>)'>
                                         Edit </p>
@@ -121,6 +134,7 @@ $systems = System::all();
         border-bottom-right-radius: 5px;
         margin-bottom: 10px;
     }
+
     #link_edit_user {
         color: #009610;
         cursor: pointer;

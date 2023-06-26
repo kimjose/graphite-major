@@ -21,3 +21,8 @@ UNLOCK TABLES;
 alter table systems add column program_id int null after folder_id;
 update systems set program_id = 2 where 1;
 ALTER table systems change column program_id program_id int not null;
+
+-- Add programs to users
+alter table users add column program_id int null after access_level;
+update users set program_id = 2 where 1;
+alter table users change program_id program_id int not null;

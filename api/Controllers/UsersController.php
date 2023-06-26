@@ -13,7 +13,7 @@ class UsersController
     {
         try {
             $system_ids = [];
-            $attributes = ['access_level', 'first_name', 'middle_name', 'last_name', 'email', 'phone_number'];
+            $attributes = ['access_level', 'program_id', 'first_name', 'middle_name', 'last_name', 'email', 'phone_number'];
             $missing = Utility::checkMissingAttributes($data, $attributes);
             throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
             extract($data);
@@ -34,7 +34,7 @@ class UsersController
     {
         try {
             $system_ids = [];
-            $attributes = ['access_level', 'first_name', 'middle_name', 'last_name', 'email', 'phone_number'];
+            $attributes = ['access_level', 'program_id', 'first_name', 'middle_name', 'last_name', 'email', 'phone_number'];
             $missing = Utility::checkMissingAttributes($data, $attributes);
             throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
             extract($data);
@@ -42,7 +42,7 @@ class UsersController
             $ids = implode(',', $system_ids);
             $data['system_ids'] = $ids;
             $user->update($data);
-            response(SUCCESS_RESPONSE_CODE, "User created successfully.", $user);
+            response(SUCCESS_RESPONSE_CODE, "User updated successfully.", $user);
         } catch (\Throwable $th) {
             Utility::logError(SUCCESS_RESPONSE_CODE, $th->getMessage());
             response(PRECONDITION_FAILED_ERROR_CODE, $th->getMessage());
