@@ -247,10 +247,11 @@ const addSystem = () => {
   }
 };
 
-const editSystem = (id, name, folderId) => {
+const editSystem = (id, programId, name, folderId) => {
   let btnAddSystem = document.getElementById("btnAddSystem");
   let divAddSystem = document.getElementById("divAddSystem");
   let inputId = document.getElementById("inputId");
+  let selectProgram = document.getElementById("selectProgram");
   let inputName = document.getElementById("inputName");
   let inputFolderId = document.getElementById("inputFolderId");
 
@@ -262,6 +263,7 @@ const editSystem = (id, name, folderId) => {
     btnAddSystem.innerText = "Add User";
   }
   inputId.value = id;
+  $(selectProgram).val(programId)
   inputName.value = name;
   inputFolderId.value = folderId;
 };
@@ -269,10 +271,17 @@ const editSystem = (id, name, folderId) => {
 const saveSystem = () => {
   let inputId = document.getElementById("inputId");
   let inputName = document.getElementById("inputName");
+  let selectProgram = document.getElementById("selectProgram");
   let inputFolderId = document.getElementById("inputFolderId");
   let btnSaveSystem = document.getElementById("btnSaveSystem");
 
   let _id = inputId.value.trim();
+  let program = $(selectProgram).val()
+  if(program == ""){
+    toastr.error("Select a valid program")
+    selectProgram.focus()
+    return
+  }
   let name = inputName.value.trim();
   if (name == "") {
     toastr.error("name is required");
@@ -290,6 +299,7 @@ const saveSystem = () => {
   fetch(_id == "" ? "../system/create" : `../system/update/${_id}`, {
     method: "POST",
     body: JSON.stringify({
+      program_id: program,
       name: name,
       folder_id: folderId,
     }),

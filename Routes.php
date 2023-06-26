@@ -51,7 +51,7 @@ $router->mount('/system', function() use($router){
     $data = json_decode(file_get_contents('php://input'), true);
     $router->post('/create', function() use ($data){
         try{
-            $attributes = ['name', 'folder_id'];
+            $attributes = ['name', 'folder_id', 'program_id'];
             $missing = Utility::checkMissingAttributes($data, $attributes);
             throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
             $system = System::create($data);
@@ -64,7 +64,7 @@ $router->mount('/system', function() use($router){
     });
     $router->post('/update/{id}', function($id) use ($data){
         try{
-            $attributes = ['name', 'folder_id'];
+            $attributes = ['name', 'folder_id', 'program_id'];
             $missing = Utility::checkMissingAttributes($data, $attributes);
             throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
             $system = System::findOrFail($id);
@@ -86,7 +86,7 @@ $router->mount('/sharepoint', function() use($router){
         $controller->uploadQueuedFiles();
     });
     $router->get('/folder_id', function() use ($controller){
-        $controller->getFolderId($_GET['path']);
+        $controller->getFolderId($_GET['path']); // TODO Add program to variables and refactor...
     });
     $router->delete('/path/{folder_id}/{id}', function($folder_id, $id) use($controller){
         $controller->deleteFile($folder_id, $id);

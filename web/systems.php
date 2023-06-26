@@ -1,10 +1,12 @@
 <?php
 
+use Umb\SystemBackup\Models\Program;
 use Umb\SystemBackup\Models\User;
 use Umb\SystemBackup\Models\System;
 
 require_once __DIR__ . "/../vendor/autoload.php";
-$systems = System::all();
+$systems = System::all(); // TODO Refactor according to user access level
+$programs = Program::all();
 ?>
 
 <div class="container-fluid mt-4">
@@ -16,6 +18,17 @@ $systems = System::all();
 
                 <form action="" method="POST" onsubmit="event.preventDefault();" id="formSystem">
                     <input type="text" id="inputId" value="" hidden>
+
+                    <div class="form-group">
+                        <label for="selectProgram">Program</label>
+                        <select name="program_id" id="selectProgram" class="form-control" required>
+                            <option value="" selected hidden>Select Program</option>
+                            <?php foreach ($programs as $program) : ?>
+                                <option value="<?php echo $program->id ?>"><?php echo $program->name ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+
                     <div class="form-group">
                         <label for="inputName">System Name</label>
                         <input type="text" class="form-control" id="inputName" required name="name" placeholder="System Name">
@@ -31,7 +44,6 @@ $systems = System::all();
                         </div>
                         <input type="text" class="form-control" id="inputFolderId" required name="folder_id" placeholder="Folder Id">
                     </div>
-
                     <button type="submit" name="savebtn" id="btnSaveSystem" class="btn btn-primary" onclick="saveSystem()">Save
                     </button>
 
@@ -43,6 +55,7 @@ $systems = System::all();
                         <tr>
                             <th>_ID</th>
                             <th>Name</th>
+                            <th>Program</th>
                             <th>Folder Id</th>
                             <th>Actions</th>
                         </tr>
@@ -52,9 +65,10 @@ $systems = System::all();
                             <tr>
                                 <td><?php echo $system->id ?></td>
                                 <td><?php echo $system->name ?></td>
+                                <td><?php echo $system->program()->name ?></td>
                                 <td><?php echo $system->folder_id ?></td>
                                 <td>
-                                    <p class="" id="link_edit_system" onclick='editSystem(<?php echo $system->id ?>, "<?php echo $system->name ?>", "<?php echo $system->folder_id ?>")'>
+                                    <p class="" id="link_edit_system" onclick='editSystem(<?php echo $system->id ?>, <?php echo $system->program_id ?>, "<?php echo $system->name ?>", "<?php echo $system->folder_id ?>")'>
                                         Edit </p>
 
                                 </td>
