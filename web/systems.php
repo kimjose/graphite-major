@@ -4,9 +4,32 @@ use Umb\SystemBackup\Models\Program;
 use Umb\SystemBackup\Models\User;
 use Umb\SystemBackup\Models\System;
 
+$accessLevel = $_GET['access_level'];
+$programId = $_GET['program_id'];
 require_once __DIR__ . "/../vendor/autoload.php";
-$systems = System::all(); // TODO Refactor according to user access level
-$programs = Program::all();
+/** @var User[] */
+$users = [];
+/** @var System[] */
+$systems = [];
+/** @var Program */
+$programs = [];
+switch ($accessLevel) {
+    case "Admin": {
+            $systems = System::all();
+            $programs = Program::all();
+            break;
+        }
+    case "Program": {
+            if (!$programId) die('Program not provided');
+            $systems = System::where('program_id', $programId)->get();
+            $programs = Program::where('id', $programId)->get();
+            break;
+        }
+    default: {
+            die('Unable to proceed...');
+            break;
+        }
+}
 ?>
 
 <div class="container-fluid mt-4">
