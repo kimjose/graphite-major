@@ -211,7 +211,7 @@ if ($currUser->access_level == 'Facility') {
                     }
                     case "#users": {
                         document.querySelector("#tabUsers").classList.add('active')
-                        fetch(`users`)
+                        fetch(`users?access_level=${user.access_level}&program_id=${user.program_id}`)
                             .then(response => {
                                 return response.text()
                             })

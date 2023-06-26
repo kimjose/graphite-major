@@ -5,9 +5,33 @@ use Umb\SystemBackup\Models\System;
 use Umb\SystemBackup\Models\Program;
 
 require_once __DIR__ . "/../vendor/autoload.php";
-$users = User::all();
-$systems = System::all();// TODO Refactor according to user access level
-$programs = Program::all();
+$accessLevel = $_GET['access_level'];
+$programId = $_GET['program_id'];
+/** @var User[] */
+$users = [];
+/** @var System[] */
+$systems = [];
+/** @var Program */
+$programs = [];
+switch ($accessLevel) {
+    case "Admin": {
+            $users = User::all();
+            $systems = System::all();
+            $programs = Program::all();
+            break;
+        }
+    case "Program": {
+            if (!$programId) die('Program not provided');
+            $users = User::where('program_id', $programId)->where('access_level', 'NOT LIKE', 'Admin')->get();
+            $systems = System::where('program_id', $programId)->get();
+            $programs = Program::where('id', $programId)->get();
+            break;
+        }
+    default: {
+            die('Unable to proceed...');
+            break;
+        }
+}
 ?>
 
 <div class="container-fluid mt-4">
@@ -47,6 +71,7 @@ $programs = Program::all();
                                 <label for="">Access Level</label>
                                 <select name="access_level" id="selectAccessLevel" class="form-control" onchange="accessLevelChanged()">
                                     <option value="" <?php echo $id == '' ? 'selected' : '' ?> hidden>Select level</option>
+                                    <?php if ($accessLevel == 'Admin') : ?><option value="Admin">Administrator</option> <?php endif; ?>
                                     <option value="Program">Program</option>
                                     <option value="Facility">Facility / Systems</option>
                                 </select>
