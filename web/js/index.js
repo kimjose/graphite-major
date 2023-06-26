@@ -340,15 +340,21 @@ const toggleGetFolderId = () => {
 };
 
 const getFolderId = () => {
+  let selectProgram = document.getElementById("selectProgram");
   let inputFolderPath = document.getElementById("inputFolderPath");
   let inputFolderId = document.getElementById("inputFolderId");
+  let program = $(selectProgram).val()
+  if(program == ''){
+    toastr.error("Select a program to continue.")
+    return
+  }
   let path = inputFolderPath.value.trim();
   if (path == "") {
     toastr.error("Enter a valid path.");
     return;
   }
   toastr.info("Getting ID...");
-  fetch(`../sharepoint/folder_id?path=${path}`)
+  fetch(`../sharepoint/folder_id?path=${path}&program_id=${program}`)
     .then((response) => {
       return response.json();
     })

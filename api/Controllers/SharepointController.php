@@ -4,6 +4,7 @@ namespace Umb\SystemBackup\Controllers;
 
 use Umb\SystemBackup\Controllers\Utils\Utility;
 use Umb\SystemBackup\Models\DriveFile;
+use Umb\SystemBackup\Models\Program;
 use Umb\SystemBackup\Models\System;
 use Umb\SystemBackup\Models\Upload;
 
@@ -277,17 +278,18 @@ class SharepointController
         }
     }
 
-    public function getFolderId($path)
+    public function getFolderId($programId, $path)
     {
         try {
             if ($path == null || $path == '') throw new \Exception("Error Processing Request :path is missing", 1);
-
-            $path = str_replace(' ', '%20', $path);
+            $program = Program::findOrFail($programId);
+            $p = $program->root_folder_path . $path;
+            $path = str_replace(' ', '%20', $p);
 
             $curl = curl_init();
 
             curl_setopt_array($curl, [
-                CURLOPT_URL => "https://graph.microsoft.com/v1.0/drives/b!0xyf-sxTkkqFel7v-6CHS1h2I9wcc1VItFkBUeMX15rPBkBcpOtiSZVc35A4dA--/root:/SYSTEM%20BACKUP/EVENT%20MANAGER/{$path}",
+                CURLOPT_URL => "https://graph.microsoft.com/v1.0/drives/b!0xyf-sxTkkqFel7v-6CHS1h2I9wcc1VItFkBUeMX15rPBkBcpOtiSZVc35A4dA--/root:/{$path}",
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_ENCODING => "",
                 CURLOPT_MAXREDIRS => 10,
