@@ -54,7 +54,7 @@ switch ($accessLevel) {
                                 <input type="text" class="form-control" id="inputFirstName" required name="first_name" placeholder="First Name">
                             </div>
                             <div class="form-group">
-                                <label for="inputMiddleName">Last Name</label>
+                                <label for="inputMiddleName">Middle Name</label>
                                 <input type="text" class="form-control" id="inputMiddleName" name="middle_name" placeholder="Last Name">
                             </div>
                         </div>
