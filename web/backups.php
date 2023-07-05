@@ -65,4 +65,7 @@ $c = 1;
         color: red;
         cursor: pointer;
     }
+    .delete-file:hover, a:hover{
+        text-decoration: underline;
+    }
 </style>

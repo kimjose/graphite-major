@@ -55,7 +55,7 @@ switch ($accessLevel) {
                             </div>
                             <div class="form-group">
                                 <label for="inputMiddleName">Middle Name</label>
-                                <input type="text" class="form-control" id="inputMiddleName" name="middle_name" placeholder="Last Name">
+                                <input type="text" class="form-control" id="inputMiddleName" name="middle_name" placeholder="Middle Name">
                             </div>
                         </div>
                         <div class="col-md-6 col-sm-12">
@@ -139,7 +139,7 @@ switch ($accessLevel) {
                                 </td>
                                 <td><?php echo $user->program()->name ?></td>
                                 <td>
-                                    <p class="" id="link_edit_user" onclick='editUser(<?php echo json_encode($user) ?>)'>
+                                    <p class="link_edit_user" onclick='editUser(<?php echo json_encode($user) ?>)'>
                                         Edit </p>
                                 </td>
                             </tr>
@@ -160,9 +160,12 @@ switch ($accessLevel) {
         margin-bottom: 10px;
     }
 
-    #link_edit_user {
+    .link_edit_user {
         color: #009610;
         cursor: pointer;
+    }
+    .link_edit_user:hover{
+        text-decoration: underline;
     }
 </style>
 

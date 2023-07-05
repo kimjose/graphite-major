@@ -19,7 +19,7 @@ $programs = Program::all();
                         <input type="text" class="form-control" id="inputName" required name="name" placeholder="Program Name">
                     </div>
                     <div class="form-group">
-                        <label for="inputRootFolderPath">Folder path</label>
+                        <label for="inputRootFolderPath">Root Folder path <span class="text-info"> (e.g var/www/)</span></label>
                         <input type="text" class="form-control" id="inputRootFolderPath" required name="root_folder_path" placeholder="Folder Path">
                     </div>
 
@@ -45,7 +45,7 @@ $programs = Program::all();
                                 <td><?php echo $program->name ?></td>
                                 <td><?php echo $program->root_folder_path ?></td>
                                 <td>
-                                    <p class="" id="link_edit_program" onclick='editProgram(<?php echo $program->id ?>, "<?php echo $program->name ?>", "<?php echo $program->root_folder_path ?>")'>
+                                    <p class="link_edit_program" onclick='editProgram(<?php echo $program->id ?>, "<?php echo $program->name ?>", "<?php echo $program->root_folder_path ?>")'>
                                         Edit </p>
 
                                 </td>
@@ -67,9 +67,12 @@ $programs = Program::all();
         margin-bottom: 10px;
     }
 
-    #link_edit_program {
+    .link_edit_program {
         color: #009610;
         cursor: pointer;
+    }
+    .link_edit_program:hover{
+        text-decoration: underline;
     }
 
 </style>

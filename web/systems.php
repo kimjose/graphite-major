@@ -91,7 +91,7 @@ switch ($accessLevel) {
                                 <td><?php echo $system->program()->name ?></td>
                                 <td><?php echo $system->folder_id ?></td>
                                 <td>
-                                    <p class="" id="link_edit_system" onclick='editSystem(<?php echo $system->id ?>, <?php echo $system->program_id ?>, "<?php echo $system->name ?>", "<?php echo $system->folder_id ?>")'>
+                                    <p class="link_edit_system" onclick='editSystem(<?php echo $system->id ?>, <?php echo $system->program_id ?>, "<?php echo $system->name ?>", "<?php echo $system->folder_id ?>")'>
                                         Edit </p>
 
                                 </td>
@@ -113,9 +113,12 @@ switch ($accessLevel) {
         margin-bottom: 10px;
     }
 
-    #link_edit_system {
+    .link_edit_system {
         color: #009610;
         cursor: pointer;
+    }
+    .link_edit_system:hover{
+        text-decoration: underline;
     }
 
     #divGetFolderId {
