@@ -4,18 +4,22 @@ require_once 'vendor/autoload.php';
 use Microsoft\Graph\Graph;
 use Microsoft\Graph\Model;
 
-$tenantId = 'YOUR_TENANT_ID';
-$clientId = 'YOUR_CLIENT_ID';
-$clientSecret = 'YOUR_CLIENT_SECRET';
+$tenantId = $_ENV['TENANT_ID'];
+$clientId = $_ENV['CLIENT_ID'];
+$clientSecret = $_ENV['CLIENT_SECRET'];
 
-$sourceChannelId = 'SOURCE_CHANNEL_ID';
-$destinationChannelId = 'DESTINATION_CHANNEL_ID';
 $fileName = 'FILE_NAME';
-$groupId = 'GROUP_ID';
+$groupId = $_ENV['GROUP_ID'];
 
 $graph = new Graph();
-$graph->setAccessToken(getAccessToken());
+$graph->setAccessToken(getAccessToken($tenantId, $clientId, $clientId));
 
+
+$sourceChannelId = getChannelId($graph, $groupId, 'SYSTEM BACKUP');
+$destinationChannelId = getChannelId($graph, $groupId, 'PDW');
+
+echo "The source channel id is : {$sourceChannelId} \n";
+echo "The destination channel id is : {$destinationChannelId}";
 // Get the source file
 $sourceDriveItem = $graph->createRequest("GET", "/groups/{$groupId}/drive/items/{$sourceChannelId}:/{$fileName}")
     ->setReturnType(Model\DriveItem::class)
@@ -30,12 +34,31 @@ $graph->createRequest("PUT", "/groups/{$groupId}/drive/items/{$destinationChanne
     ->attachBody($destinationDriveItem)
     ->execute();
 
-function getAccessToken()
+function getAccessToken($tenantId, $clientId, $clientSecret)
 {
-    $tenantId = 'YOUR_TENANT_ID';
-    $clientId = 'YOUR_CLIENT_ID';
-    $clientSecret = 'YOUR_CLIENT_SECRET';
 
+    $curl = curl_init("https://login.microsoftonline.com/1c17770e-a269-4517-b296-c71e84196454/oauth2/v2.0/token");
+
+        $postParameter = array(
+            'grant_type' => $_ENV['GRANT_TYPE'],
+            'client_id' => $_ENV['CLIENT_ID'],
+            'client_secret' => $_ENV['CLIENT_SECRET'],
+            'scope' => $_ENV['SCOPE']
+        );
+        curl_setopt($curl, CURLOPT_POSTFIELDS, $postParameter);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+
+        $curlResponse = json_decode(curl_exec($curl));
+        // print_r($curlResponse);
+        if ($curlResponse->error) {
+            throw new \Exception("Error Processing Request" . $curlResponse->error, 1);
+        }
+        echo "Token is :    " . $curlResponse->access_token . "\n";
+        return $curlResponse->access_token;
+        //echo $token;
+
+        curl_close($curl);
+/*
     $url = "https://login.microsoftonline.com/{$tenantId}/oauth2/token";
     $data = [
         'grant_type' => 'client_credentials',
@@ -57,5 +80,28 @@ function getAccessToken()
     $result = json_decode($response, true);
 
     return $result['access_token'];
+    */
 }
-?>
+
+function getChannelId($graph, $groupId, $channelName)
+{
+
+
+    // Get the channels in the specified group
+    $channels = $graph->createRequest("GET", "/groups/{$groupId}/channels")
+        ->setReturnType(\Microsoft\Graph\Model\Channel::class)
+        ->execute();
+
+
+
+    // Find the channel ID based on the channel name
+    $channelId = null;
+    foreach ($channels as $channel) {
+        if ($channel->getDisplayName() === $channelName) {
+            $channelId = $channel->getId();
+            break;
+        }
+    }
+
+    return $channelId;
+}
