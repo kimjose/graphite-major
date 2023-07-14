@@ -10,12 +10,22 @@ $clientSecret = $_ENV['CLIENT_SECRET'];
 
 $fileName = 'FILE_NAME';
 $groupId = $_ENV['GROUP_ID'];
+$teamId= $_ENV['TEAM_ID'];
 
 $graph = new Graph();
 $graph->setAccessToken(getAccessToken($tenantId, $clientId, $clientId));
 
+// Retrieve the list of channels in the specified team
+$channels = $graph->createRequest("GET", "/teams/{$groupId}/channels")
+    ->setReturnType(Model\Channel::class)
+    ->execute();
 
-$sourceChannelId = getChannelId($graph, $groupId, 'SYSTEM BACKUP');
+// Print the channel ID and name
+foreach ($channels as $channel) {
+    echo "Channel ID: " . $channel->getId() . "\n";
+    echo "Channel Name: " . $channel->getDisplayName() . "\n\n";
+}
+$sourceChannelId = getChannelId($graph, $groupId, 'TEST');
 $destinationChannelId = getChannelId($graph, $groupId, 'PDW');
 
 echo "The source channel id is : {$sourceChannelId} \n";
@@ -53,7 +63,7 @@ function getAccessToken($tenantId, $clientId, $clientSecret)
         if ($curlResponse->error) {
             throw new \Exception("Error Processing Request" . $curlResponse->error, 1);
         }
-        echo "Token is :    " . $curlResponse->access_token . "\n";
+       // echo "Token is :    " . $curlResponse->access_token . "\n";
         return $curlResponse->access_token;
         //echo $token;
 
