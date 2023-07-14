@@ -30,17 +30,46 @@ $destinationChannelId = getChannelId($graph, $groupId, 'PDW');
 
 echo "The source channel id is : {$sourceChannelId} \n";
 echo "The destination channel id is : {$destinationChannelId}";
+
+
 // Get the source file
-$sourceDriveItem = $graph->createRequest("GET", "/groups/{$groupId}/drive/items/{$sourceChannelId}:/{$fileName}")
+/* $sourceDriveItem = $graph->createRequest("GET", "/groups/{$groupId}/drive/items/{$sourceChannelId}:/EVENT MANAGER/CONNECT/KenyaEMR/TEST_HC/enrollments_report.xlsx")
+    ->setReturnType(Model\DriveItem::class)
+    ->execute(); */
+// Get the source folder
+$sourceDriveItems = $graph->createRequest("GET", "/groups/{$groupId}/drive/items/{$sourceChannelId}/children")
     ->setReturnType(Model\DriveItem::class)
     ->execute();
 
+foreach ($sourceDriveItems as $sourceDriveItem) {
+    if ($sourceDriveItem->folder === null) {
+        // Only process files, ignore subfolders
+
+        // Check if the file already exists in the destination channel
+        $destinationDriveItem = $graph->createRequest("GET", "/groups/{$groupId}/drive/items/{$destinationChannelId}:/{$sourceDriveItem->name}")
+            ->setReturnType(Model\DriveItem::class)
+            ->execute();
+
+        // Compare the modified timestamps of the files to determine if syncing is needed
+        if ($destinationDriveItem->getLastModifiedDateTime() < $sourceDriveItem->getLastModifiedDateTime()) {
+            // File in the destination channel is outdated, update it
+            $destinationDriveItem->setContent(null);
+            $destinationDriveItem->setFile($sourceDriveItem->getFile());
+
+            $graph->createRequest("PUT", "/groups/{$groupId}/drive/items/{$destinationChannelId}:/{$sourceDriveItem->name}")
+                ->attachBody($destinationDriveItem)
+                ->execute();
+
+            echo "Synced file: {$sourceDriveItem->name}\n";
+        }
+    }
+}
 // Create a new file in the destination channel
 $destinationDriveItem = new Model\DriveItem();
 $destinationDriveItem->setName($sourceDriveItem->getName());
 $destinationDriveItem->setFile($sourceDriveItem->getFile());
 
-$graph->createRequest("PUT", "/groups/{$groupId}/drive/items/{$destinationChannelId}:/{$fileName}")
+$graph->createRequest("PUT", "/groups/{$groupId}/drive/items/{$destinationChannelId}:/CONNECT/KenyaEMR/TEST_HC/enrollments_report.xlsx")
     ->attachBody($destinationDriveItem)
     ->execute();
 
@@ -98,7 +127,7 @@ function getChannelId($graph, $groupId, $channelName)
 
 
     // Get the channels in the specified group
-    $channels = $graph->createRequest("GET", "/groups/{$groupId}/channels")
+    $channels = $graph->createRequest("GET", "/teams/{$groupId}/channels")
         ->setReturnType(\Microsoft\Graph\Model\Channel::class)
         ->execute();
 
