@@ -12,15 +12,13 @@
         {
             "name": "kimjose",
             "email": "kimjose693@gmail.com"
-        }
-    ],
-    "authors": [
+        },
         {
             "name": "fkimonye",
             "email": "fkimonye@gmail.com"
         }
     ],
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "require": {
         "illuminate/database": "8.x-dev",
         "vlucas/phpdotenv": "5.5.x-dev",
