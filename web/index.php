@@ -8,7 +8,7 @@ $systems = [];
 if ($currUser->access_level == 'Facility') {
     $systems = System::whereIn('id', explode(',', $currUser->system_ids))->get();
 } else if ($currUser->access_level == 'Program') {
-    $systems = System::where('program_id', $currUser->system_ids)->get();
+    $systems = System::where('program_id', $currUser->program_id)->get();
 } else {
     $systems = System::all();
 }
