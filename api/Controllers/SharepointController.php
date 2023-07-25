@@ -195,6 +195,111 @@ class SharepointController
         }
     }
 
+    public function uploadChunkedFile()
+    {
+
+        try {
+            // Replace these with your actual values
+            $access_token = $this->accessToken;
+            $file_path = "/home/joseph/Downloads/crims_live_2023-05-03_220001.sql.7z";
+            $upload_url = ""; // The uploadUrl obtained from the createUploadSession response
+            $chunk_size = 5 * 1024 * 1024; // Chunk size in bytes (5MB in this example)
+
+            // Step 1: Create an Upload Session
+            $url = "https://graph.microsoft.com/v1.0/users/391e55cd-5287-4e23-9c8d-4d6917944d12/drive/root:{$file_path}:/createUploadSession";
+            $headers = array(
+                "Authorization: Bearer " . $access_token,
+                "Content-Type: application/json"
+            );
+
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            $response = curl_exec($ch);
+            curl_close($ch);
+
+            $upload_data = json_decode($response, true);
+
+            $upload_url = $upload_data['uploadUrl'];
+            print_r($upload_data);
+            echo $upload_url;
+
+            // Step 2: Upload the Chunks
+            $handle = fopen($file_path, "rb");
+            $index = 0;
+
+            while (!feof($handle)) {
+                $chunk = fread($handle, $chunk_size);
+
+                // Step 2.1: Calculate chunk range
+                $start = $index * $chunk_size;
+                $end = min(ftell($handle), filesize($file_path));
+                $range = "bytes $start-" . ($end - 1) . "/" . filesize($file_path);
+
+                // Step 2.2: Upload the chunk
+                $ch = curl_init();
+                curl_setopt($ch, CURLOPT_URL, $upload_url);
+                curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $chunk);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+                    "Content-Length: " . strlen($chunk),
+                    "Content-Range: $range",
+                ));
+
+                $response = curl_exec($ch);
+                $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+                curl_close($ch);
+                echo "Response is ::::" . json_encode($response);
+                // Step 2.3: Handle response and error checking
+                if ($http_code >= 200 && $http_code < 300) {
+                    // Successful upload, you may process the response if needed
+                } else {
+                    // Error occurred, handle the error, and possibly retry the chunk
+                    echo "Error uploading chunk: $index\n";
+                    break;
+                }
+
+                $index++;
+            }
+
+            fclose($handle);
+
+            // Step 3: Complete the Upload
+            $url = $upload_data['uploadUrl'];
+            $headers = array(
+                "Authorization: Bearer " . $access_token,
+                "Content-Type: application/json"
+            );
+
+            $data = json_encode(array("file" => array()));
+
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PATCH");
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+            $response = curl_exec($ch);
+            $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            curl_close($ch);
+
+            // Step 3.1: Handle response and error checking
+            if ($http_code >= 200 && $http_code < 300) {
+                // Upload complete, you may process the response if needed
+                echo "File upload successful!\n";
+            } else {
+                // Error occurred during completion, handle the error
+                echo "Error completing the upload.\n";
+            }
+        } catch (\Throwable $th) {
+            Utility::logError(SUCCESS_RESPONSE_CODE, $th->getMessage());
+            response(PRECONDITION_FAILED_ERROR_CODE, $th->getMessage());
+            http_response_code(PRECONDITION_FAILED_ERROR_CODE);
+        }
+    }
+
     public function deleteFile($folder_id, $id)
     {
         try {
@@ -310,7 +415,7 @@ class SharepointController
             $r = json_decode($response, true);
             if ($r['error']) throw new \Exception($r['error']['message'], -1);
             $data['id'] = $r['id'];
-            if($pathRequired) response(SUCCESS_RESPONSE_CODE, "ID retrieved successfully.", $data);
+            if ($pathRequired) response(SUCCESS_RESPONSE_CODE, "ID retrieved successfully.", $data);
             return $r['id'];
         } catch (\Throwable $th) {
             Utility::logError(SUCCESS_RESPONSE_CODE, $th->getMessage());
@@ -329,7 +434,7 @@ class SharepointController
             $programId = $data['program_id'];
             $path = $data['path'];
             $program = Program::find($programId);
-            if($program == null) throw new \Exception("Program not found", -1);
+            if ($program == null) throw new \Exception("Program not found", -1);
             $programFolderId = $this->getFolderId($data['program_id'], "", false);
             $holderFile = __DIR__ . "/../holder.txt";
 
@@ -361,7 +466,7 @@ class SharepointController
             if ($r['error']) {
                 $errorMessage = $r['error']['message'];
                 throw new \Exception($errorMessage);
-            } 
+            }
             // $driveFile = json_decode($response, false);
             // echo json_encode($driveFile);
             response(SUCCESS_RESPONSE_CODE, "Folder created successfully");

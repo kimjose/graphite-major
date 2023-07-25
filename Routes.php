@@ -92,6 +92,9 @@ $router->mount('/sharepoint', function() use($router){
         $data = json_decode(file_get_contents('php://input'), true);
         $controller->createFolder($data);
     });
+    $router->post('/upload_chunk', function() use($controller){
+        $controller->uploadChunkedFile();
+    });
     $router->delete('/path/{folder_id}/{id}', function($folder_id, $id) use($controller){
         $controller->deleteFile($folder_id, $id);
     });
