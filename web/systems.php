@@ -63,6 +63,7 @@ switch ($accessLevel) {
                             <div id="divGetFolderId" class="d-none">
                                 <input type="text" class="form-control" id="inputFolderPath" required name="path" placeholder="Folder Path">
                                 <buttton class="btn btn-outline-secondary mt-2" onclick="getFolderId()">Get Id</buttton>
+                                <buttton class="btn btn-outline-info mt-2 d-none" id="btnCreateFolder" onclick="createFolder()">Create Folder</buttton>
                             </div>
                         </div>
                         <input type="text" class="form-control" id="inputFolderId" required name="folder_id" placeholder="Folder Id">

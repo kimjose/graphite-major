@@ -151,12 +151,12 @@ class SharepointController
                         curl_close($curl);
 
                         $r = json_decode($response, true);
-                        if ($r['error']){
+                        if ($r['error']) {
                             $errorMessage = $r['error']['message'];
                             $upload->update([
                                 'upload_error' => $errorMessage
                             ]);
-                            throw new \Exception($errorMessage );
+                            throw new \Exception($errorMessage);
                         }
 
                         $driveFile = json_decode($response, false);
@@ -278,10 +278,10 @@ class SharepointController
         }
     }
 
-    public function getFolderId($programId, $path)
+    public function getFolderId($programId, $path, $pathRequired = true)
     {
         try {
-            if ($path == null || $path == '') throw new \Exception("Error Processing Request :path is missing", 1);
+            if (($path == null || $path == '') && $pathRequired) throw new \Exception("Error Processing Request :path is missing", 1);
             $program = Program::findOrFail($programId);
             $p = $program->root_folder_path . $path;
             $path = str_replace(' ', '%20', $p);
@@ -310,7 +310,61 @@ class SharepointController
             $r = json_decode($response, true);
             if ($r['error']) throw new \Exception($r['error']['message'], -1);
             $data['id'] = $r['id'];
-            response(SUCCESS_RESPONSE_CODE, "ID retrieved successfully.", $data);
+            if($pathRequired) response(SUCCESS_RESPONSE_CODE, "ID retrieved successfully.", $data);
+            return $r['id'];
+        } catch (\Throwable $th) {
+            Utility::logError(SUCCESS_RESPONSE_CODE, $th->getMessage());
+            response(PRECONDITION_FAILED_ERROR_CODE, $th->getMessage());
+            http_response_code(PRECONDITION_FAILED_ERROR_CODE);
+            return null;
+        }
+    }
+
+    public function createFolder($data)
+    {
+        try {
+            $attributes = ['path', 'program_id'];
+            $missing = Utility::checkMissingAttributes($data, $attributes);
+            throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
+            $programId = $data['program_id'];
+            $path = $data['path'];
+            $program = Program::find($programId);
+            if($program == null) throw new \Exception("Program not found", -1);
+            $programFolderId = $this->getFolderId($data['program_id'], "", false);
+            $holderFile = __DIR__ . "/../holder.txt";
+
+            $dest = $path . '/holder.txt';
+
+            $curl = curl_init();
+
+            curl_setopt_array($curl, [
+                CURLOPT_URL => "https://graph.microsoft.com/v1.0/drives/b!0xyf-sxTkkqFel7v-6CHS1h2I9wcc1VItFkBUeMX15rPBkBcpOtiSZVc35A4dA--/items/{$programFolderId}:/{$dest}:/content",
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => "",
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 600,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => "PUT",
+                CURLOPT_POSTFIELDS => file_get_contents($holderFile),
+                CURLOPT_HTTPHEADER => [
+                    "Authorization: Bearer {$this->accessToken}"
+                ],
+            ]);
+
+            $response = curl_exec($curl);
+            // $err = curl_error($curl);
+
+            curl_close($curl);
+
+            $r = json_decode($response, true);
+            if ($r['error']) {
+                $errorMessage = $r['error']['message'];
+                throw new \Exception($errorMessage);
+            } 
+            // $driveFile = json_decode($response, false);
+            // echo json_encode($driveFile);
+            response(SUCCESS_RESPONSE_CODE, "Folder created successfully");
         } catch (\Throwable $th) {
             Utility::logError(SUCCESS_RESPONSE_CODE, $th->getMessage());
             response(PRECONDITION_FAILED_ERROR_CODE, $th->getMessage());

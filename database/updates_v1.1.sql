@@ -25,4 +25,5 @@ ALTER table systems change column program_id program_id int not null;
 -- Add programs to users
 alter table users add column program_id int null after access_level;
 update users set program_id = 2 where 1;
-alter table users change program_id program_id int not null;
+alter table users change program_id program_id int not null,
+    change access_level access_level enum('Admin', 'Program', 'Facility') not null default 'Facility';

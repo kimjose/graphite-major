@@ -331,11 +331,15 @@ const saveSystem = () => {
 
 const toggleGetFolderId = () => {
   let divGetFolderId = document.getElementById("divGetFolderId");
+  let btnCreateFolder = document.getElementById("btnCreateFolder");
   console.log("Clicked...");
   if (divGetFolderId.classList.contains("d-none")) {
     divGetFolderId.classList.remove("d-none");
   } else {
     divGetFolderId.classList.add("d-none");
+  }
+  if(!btnCreateFolder.classList.contains('d-none')){
+    btnCreateFolder.classList.add('d-none')
   }
 };
 
@@ -343,6 +347,7 @@ const getFolderId = () => {
   let selectProgram = document.getElementById("selectProgram");
   let inputFolderPath = document.getElementById("inputFolderPath");
   let inputFolderId = document.getElementById("inputFolderId");
+  let btnCreateFolder = document.getElementById("btnCreateFolder");
   let program = $(selectProgram).val()
   if(program == ''){
     toastr.error("Select a program to continue.")
@@ -367,8 +372,50 @@ const getFolderId = () => {
     })
     .catch((err) => {
       toastr.error(err.message);
+      if(err.message === "The resource could not be found."){
+        if(btnCreateFolder.classList.contains('d-none')) btnCreateFolder.classList.remove('d-none')
+      }
     });
 };
+
+const createFolder = () => {
+  let selectProgram = document.getElementById("selectProgram");
+  let inputFolderPath = document.getElementById("inputFolderPath");
+  let inputFolderId = document.getElementById("inputFolderId");
+  let program = $(selectProgram).val()
+  if(program == ''){
+    toastr.error("Select a program to continue.")
+    return
+  }
+  let path = inputFolderPath.value.trim();
+  if (path == "") {
+    toastr.error("Enter a valid path.");
+    return;
+  }
+  toastr.info("Creating folder...");
+  fetch(`../sharepoint/create_folder`, {
+    method: 'POST',
+    body: JSON.stringify({
+      program_id: program,
+      path: path,
+    }),
+    headers: {
+      "content-type": "application/x-www-form-urlencoded",
+    },
+
+  })
+    .then((response) => {
+      return response.json();
+    })
+    .then((response) => {
+      if (response.code == 200) {
+        toastr.success(response.message);
+      } else throw new Error(response.message);
+    })
+    .catch((err) => {
+      toastr.error(err.message);
+    });
+}
 
 const deleteFile = (fileId, folderId) => {
   let r = confirm(
