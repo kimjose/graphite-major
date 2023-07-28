@@ -106,7 +106,7 @@ class SharepointController
         try {
             /**
              * Get uploads not sent to sharepoint and loop
-             * Check if file exists if not delete the upload
+             * Check if file exists, if not delete the upload
              * if exists get the system
              * get folder path from system
              * do upload...↑↑↑↑↑🔼🔼🔼
@@ -206,7 +206,7 @@ class SharepointController
             $chunk_size = 5 * 1024 * 1024; // Chunk size in bytes (5MB in this example)
 
             // Step 1: Create an Upload Session
-            $url = "https://graph.microsoft.com/v1.0/users/391e55cd-5287-4e23-9c8d-4d6917944d12/drive/root:{$file_path}:/createUploadSession";
+            $url = "https://graph.microsoft.com/v1.0/users/3a4015c0-c086-4eaa-8bd7-4789f4caaddd/drive/root/SYSTEM%20BACKUP/EVENT%20MANAGER/:{$file_path}:/createUploadSession";
             $headers = array(
                 "Authorization: Bearer " . $access_token,
                 "Content-Type: application/json"
