@@ -2,11 +2,15 @@
 
 namespace Umb\SystemBackup\Controllers;
 
-use Umb\SystemBackup\Controllers\Utils\Utility;
-use Umb\SystemBackup\Models\DriveFile;
-use Umb\SystemBackup\Models\Program;
+use Microsoft\Graph\Model\DriveItem;
+use Microsoft\Graph\Graph;
 use Umb\SystemBackup\Models\System;
 use Umb\SystemBackup\Models\Upload;
+use Umb\SystemBackup\Models\Program;
+use Umb\SystemBackup\Models\DriveFile;
+use Illuminate\Database\Eloquent\Model;
+use Microsoft\Graph\Model\UploadSession;
+use Umb\SystemBackup\Controllers\Utils\Utility;
 
 class SharepointController
 {
@@ -203,10 +207,11 @@ class SharepointController
             $access_token = $this->accessToken;
             $file_path = "/home/joseph/Downloads/crims_live_2023-05-03_220001.sql.7z";
             $upload_url = ""; // The uploadUrl obtained from the createUploadSession response
-            $chunk_size = 5 * 1024 * 1024; // Chunk size in bytes (5MB in this example)
+            $chunk_size = 320 * 1024; // Must be 320 KiB
 
             // Step 1: Create an Upload Session
-            $url = "https://graph.microsoft.com/v1.0/users/3a4015c0-c086-4eaa-8bd7-4789f4caaddd/drive/root/SYSTEM%20BACKUP/EVENT%20MANAGER/:{$file_path}:/createUploadSession";
+            // $url = "https://graph.microsoft.com/v1.0/users/3a4015c0-c086-4eaa-8bd7-4789f4caaddd/items/root:/SYSTEM%20BACKUP/EVENT%20MANAGER/test.txt:/createUploadSession";
+            $url = "https://graph.microsoft.com/v1.0/drives/b!0xyf-sxTkkqFel7v-6CHS1h2I9wcc1VItFkBUeMX15rPBkBcpOtiSZVc35A4dA--/items/0167YEQWAJ7PZMFVVG4JFYHI5534FBGDPA:/test.txt:/createUploadSession";
             $headers = array(
                 "Authorization: Bearer " . $access_token,
                 "Content-Type: application/json"
@@ -223,8 +228,8 @@ class SharepointController
 
             $upload_url = $upload_data['uploadUrl'];
             print_r($upload_data);
-            echo $upload_url;
-
+            echo "Here is" .  $upload_url;
+            return;
             // Step 2: Upload the Chunks
             $handle = fopen($file_path, "rb");
             $index = 0;
@@ -297,6 +302,110 @@ class SharepointController
             Utility::logError(SUCCESS_RESPONSE_CODE, $th->getMessage());
             response(PRECONDITION_FAILED_ERROR_CODE, $th->getMessage());
             http_response_code(PRECONDITION_FAILED_ERROR_CODE);
+        }
+    }
+
+    public function uploadChunkedFileMsGraph()
+    {
+        try {
+            $file_path = "/home/joseph/Downloads/crims_live_2023-05-03_220001.sql.7z";
+            $file = basename($file_path);
+            $chunk_size = 320 * 1024; // Must be 320 KiB
+            // Replace these with your actual values
+            $access_token = $this->accessToken;
+            $file_path = "/home/joseph/Downloads/crims_live_2023-05-03_220001.sql.7z";
+
+            // Step 1: Initialize the Graph client
+            $graph = new Graph();
+            $graph->setAccessToken($access_token);
+
+            // Step 2: Create Upload Session
+            $driveItem = new DriveItem();
+            $driveItem->setName(basename($file_path)); // Set the file name
+            $uploadSession = $graph->createRequest("POST", "/drives/b!0xyf-sxTkkqFel7v-6CHS1h2I9wcc1VItFkBUeMX15rPBkBcpOtiSZVc35A4dA--/items/0167YEQWAJ7PZMFVVG4JFYHI5534FBGDPA:/{$file}:/createUploadSession")
+                ->attachBody($driveItem)
+                ->setReturnType(UploadSession::class)
+                ->execute();
+
+            $uploadUrl = $uploadSession->getUploadUrl();
+
+            // Step 3: Use the Upload URL for Chunked Upload (as shown in the previous examples)
+
+            echo "Upload session created successfully!\n" . $uploadUrl ;
+
+            // Step 2: Upload the Chunks
+            $handle = fopen($file_path, "rb");
+            $index = 0;
+
+            while (!feof($handle)) {
+                $chunk = fread($handle, $chunk_size);
+
+                // Step 2.1: Calculate chunk range
+                $start = $index * $chunk_size;
+                $end = min(ftell($handle), filesize($file_path));
+                $range = "bytes $start-" . ($end - 1) . "/" . filesize($file_path);
+
+                // Step 2.2: Upload the chunk
+                $ch = curl_init();
+                curl_setopt($ch, CURLOPT_URL, $uploadUrl);
+                curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $chunk);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+                    "Content-Length: " . strlen($chunk),
+                    "Content-Range: $range",
+                ));
+
+                $response = curl_exec($ch);
+                $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+                curl_close($ch);
+                echo "Response is ::::" . json_encode($response);
+                // Step 2.3: Handle response and error checking
+                if ($http_code >= 200 && $http_code < 300) {
+                    // Successful upload, you may process the response if needed
+                } else {
+                    // Error occurred, handle the error, and possibly retry the chunk
+                    echo "Error uploading chunk: $index\n";
+                    break;
+                }
+
+                $index++;
+            }
+
+            fclose($handle);
+
+            // Step 3: Complete the Upload
+            $headers = array(
+                "Authorization: Bearer " . $access_token,
+                "Content-Type: application/json"
+            );
+
+            $data = json_encode(array("file" => array()));
+
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $uploadUrl);
+            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PATCH");
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+            $response = curl_exec($ch);
+            $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            curl_close($ch);
+
+            // Step 3.1: Handle response and error checking
+            if ($http_code >= 200 && $http_code < 300) {
+                // Upload complete, you may process the response if needed
+                echo "File upload successful!\n";
+            } else {
+                // Error occurred during completion, handle the error
+                echo "Error completing the upload.\n";
+            }
+
+        } catch (\Throwable $th) {
+            Utility::logError(SUCCESS_RESPONSE_CODE, $th->getMessage());
+            response(PRECONDITION_FAILED_ERROR_CODE, $th->getMessage());
+            http_response_code(PRECONDITION_FAILED_ERROR_CODE);
+            //throw $th;
         }
     }
 

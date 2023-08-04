@@ -93,7 +93,7 @@ $router->mount('/sharepoint', function() use($router){
         $controller->createFolder($data);
     });
     $router->post('/upload_chunk', function() use($controller){
-        $controller->uploadChunkedFile();
+        $controller->uploadChunkedFileMsGraph();
     });
     $router->delete('/path/{folder_id}/{id}', function($folder_id, $id) use($controller){
         $controller->deleteFile($folder_id, $id);
