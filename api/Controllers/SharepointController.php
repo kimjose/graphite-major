@@ -41,7 +41,8 @@ class SharepointController
         curl_close($curl);
     }
 
-    public function refreshToken(){
+    public function refreshToken()
+    {
         $curl = curl_init("https://login.microsoftonline.com/1c17770e-a269-4517-b296-c71e84196454/oauth2/v2.0/token");
 
         $postParameter = array(
@@ -140,15 +141,19 @@ class SharepointController
              * the delete the file locally
              */
             /** @var Upload[] */
-            $uploads = Upload::where('uploaded_to_sharepoint', 0)->limit(1)->get();
+            $uploads = Upload::where('uploaded_to_sharepoint', 0)->limit(10)->get();
             $all = sizeof($uploads);
             $failed = 0;
+            $first = true; // Hold for refresh token
             foreach ($uploads as $upload) {
                 try {
                     $dir = $_ENV['PUBLIC_DIR'] . 'temp/';
                     if (!is_file($dir . $upload->file_name)) {
                         $upload->delete();
                     } else {
+                        if (!$first) $this->refreshToken();
+                        $first = false;
+
                         $system = $upload->system();
                         if ($system == null) {
                             $upload->delete();
@@ -158,86 +163,139 @@ class SharepointController
 
                         $file_path = $dir . $upload->file_name;
                         $fileSize = filesize($file_path);
-                        if($fileSize > (240 * 1024 * 1024)){// Big files do chunky...
-                            
-                        } else{}
-                        $file = basename($file_path);
-                        $chunk_size = 5 * 1024 * 1024;
-                        // Replace these with your actual values
-                        $access_token = $this->accessToken;
+                        if ($fileSize > (240 * 1024 * 1024)) { // Big files do chunky...
+                            $file = basename($file_path);
+                            $chunk_size = 5 * 1024 * 1024;
+                            // Replace these with your actual values
+                            $access_token = $this->accessToken;
 
-                        // Step 1: Initialize the Graph client
-                        $graph = new Graph();
-                        $graph->setAccessToken($access_token);
+                            // Step 1: Initialize the Graph client
+                            $graph = new Graph();
+                            $graph->setAccessToken($access_token);
 
-                        // Step 2: Create Upload Session
-                        $driveItem = new DriveItem();
-                        $driveItem->setName(basename($file_path)); // Set the file name
-                        $uploadSession = $graph->createRequest("POST", "/drives/b!0xyf-sxTkkqFel7v-6CHS1h2I9wcc1VItFkBUeMX15rPBkBcpOtiSZVc35A4dA--/items/{$folderId}:/{$file}:/createUploadSession")
-                            ->attachBody($driveItem)
-                            ->setReturnType(UploadSession::class)
-                            ->execute();
+                            // Step 2: Create Upload Session
+                            $driveItem = new DriveItem();
+                            $driveItem->setName(basename($file_path)); // Set the file name
+                            $uploadSession = $graph->createRequest("POST", "/drives/b!0xyf-sxTkkqFel7v-6CHS1h2I9wcc1VItFkBUeMX15rPBkBcpOtiSZVc35A4dA--/items/{$folderId}:/{$file}:/createUploadSession")
+                                ->attachBody($driveItem)
+                                ->setReturnType(UploadSession::class)
+                                ->execute();
 
-                        $uploadUrl = $uploadSession->getUploadUrl();
+                            $uploadUrl = $uploadSession->getUploadUrl();
 
-                        // Step 3: Use the Upload URL for Chunked Upload (as shown in the previous examples)
+                            // Step 3: Use the Upload URL for Chunked Upload (as shown in the previous examples)
 
-                        echo "Upload session created successfully!\n" . $uploadUrl;
+                            echo "Upload session created successfully!\n" . $uploadUrl;
 
-                        // Step 2: Upload the Chunks
-                        $handle = fopen($file_path, "rb");
-                        $index = 0;
+                            // Step 2: Upload the Chunks
+                            $handle = fopen($file_path, "rb");
+                            $index = 0;
 
-                        while (!feof($handle)) {
-                            $chunk = fread($handle, $chunk_size);
+                            while (!feof($handle)) {
+                                $chunk = fread($handle, $chunk_size);
 
-                            // Step 2.1: Calculate chunk range
-                            $start = $index * $chunk_size;
-                            $end = min(ftell($handle), filesize($file_path));
-                            $range = "bytes $start-" . ($end - 1) . "/" . filesize($file_path);
+                                // Step 2.1: Calculate chunk range
+                                $start = $index * $chunk_size;
+                                $end = min(ftell($handle), filesize($file_path));
+                                $range = "bytes $start-" . ($end - 1) . "/" . filesize($file_path);
 
-                            // Step 2.2: Upload the chunk
-                            $ch = curl_init();
-                            curl_setopt($ch, CURLOPT_URL, $uploadUrl);
-                            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
-                            curl_setopt($ch, CURLOPT_POSTFIELDS, $chunk);
-                            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                            curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-                                "Content-Length: " . strlen($chunk),
-                                "Content-Range: $range",
-                            ));
+                                // Step 2.2: Upload the chunk
+                                $ch = curl_init();
+                                curl_setopt($ch, CURLOPT_URL, $uploadUrl);
+                                curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
+                                curl_setopt($ch, CURLOPT_POSTFIELDS, $chunk);
+                                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                                curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+                                    "Content-Length: " . strlen($chunk),
+                                    "Content-Range: $range",
+                                ));
 
-                            $response = curl_exec($ch);
-                            $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-                            curl_close($ch);
-                            echo "Response is ::::" . json_encode($response);
-                            // Step 2.3: Handle response and error checking
-                            if ($http_code >= 200 && $http_code < 300) {
-                                // Successful upload, you may process the response if needed
-                            } else {
-                                // Error occurred, handle the error, and possibly retry the chunk
-                                echo "Error uploading chunk: $index\n";
-                                throw new \Exception("Error uploading chunk..." . json_encode($response));
-                                break;
+                                $response = curl_exec($ch);
+                                $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+                                curl_close($ch);
+                                echo "Response is ::::" . json_encode($response);
+                                // Step 2.3: Handle response and error checking
+                                if ($http_code >= 200 && $http_code < 300) {
+                                    // Successful upload, you may process the response if needed
+                                } else {
+                                    // Error occurred, handle the error, and possibly retry the chunk
+                                    echo "Error uploading chunk: $index\n";
+                                    throw new \Exception("Error uploading chunk..." . json_encode($response));
+                                    break;
+                                }
+
+                                $index++;
                             }
 
-                            $index++;
-                        }
+                            fclose($handle);
+                            $upload->update(['uploaded_to_sharepoint' => 1, "upload_error" => ""]);
+                            unlink($dir . $upload->file_name);
+                        } else {
 
-                        fclose($handle);
-                        $upload->update(['uploaded_to_sharepoint' => 1, "upload_error" => ""]);
-                        unlink($dir . $upload->file_name);
-                        
+                            $fileName = $upload->file_name;
+
+                            $curl = curl_init();
+
+                            curl_setopt_array($curl, [
+                                CURLOPT_URL => "https://graph.microsoft.com/v1.0/drives/b!0xyf-sxTkkqFel7v-6CHS1h2I9wcc1VItFkBUeMX15rPBkBcpOtiSZVc35A4dA--/items/{$folderId}:/{$fileName}:/content",
+                                CURLOPT_RETURNTRANSFER => true,
+                                CURLOPT_ENCODING => "",
+                                CURLOPT_MAXREDIRS => 10,
+                                CURLOPT_TIMEOUT => 600,
+                                CURLOPT_FOLLOWLOCATION => true,
+                                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                                CURLOPT_CUSTOMREQUEST => "PUT",
+                                CURLOPT_POSTFIELDS => file_get_contents($dir . $fileName),
+                                CURLOPT_HTTPHEADER => [
+                                    "Authorization: Bearer {$this->accessToken}"
+                                ],
+                            ]);
+
+                            $response = curl_exec($curl);
+                            // $err = curl_error($curl);
+
+                            curl_close($curl);
+
+                            $r = json_decode($response, true);
+                            if ($r['error']) {
+                                $errorMessage = $r['error']['message'];
+                                $upload->update([
+                                    'upload_error' => $errorMessage
+                                ]);
+                                throw new \Exception($errorMessage);
+                            }
+
+                            $driveFile = json_decode($response, false);
+                            $dstring = "@microsoft.graph.downloadUrl";
+                            $downloadUrl = $driveFile->$dstring;
+                            $createdAt = $driveFile->createdDateTime;
+                            $createdAt = str_replace('T', ' ', $createdAt);
+                            $createdAt = str_replace('Z', ' ', $createdAt);
+                            $exists = DriveFile::where('id', $driveFile->id)->where('folder_id', $folderId)->first();
+                            if (!$exists) {
+                                DriveFile::create([
+                                    'name' => $driveFile->name,
+                                    'id' => $driveFile->id,
+                                    'folder_id' => $folderId,
+                                    'web_url' => $driveFile->webUrl,
+                                    'download_url' => $downloadUrl,
+                                    'size' => $driveFile->size,
+                                    'created_date_time' => $createdAt
+                                ]);
+                            }
+                            $upload->update(['uploaded_to_sharepoint' => 1, "upload_error" => ""]);
+                            unlink($dir . $upload->file_name);
+                        }
                     }
                 } catch (\Throwable $th) {
                     $failed++;
                     Utility::logError(312, $th->getMessage() . " Upload is " . $upload->id);
                 }
             }
-            response(SUCCESS_RESPONSE_CODE, ($all - $failed) . " out of {$all} Uploaded successfully");
+            echo (($all - $failed) . " out of {$all} Uploaded successfully");
         } catch (\Throwable $th) {
             Utility::logError(SUCCESS_RESPONSE_CODE, $th->getMessage());
-            response(PRECONDITION_FAILED_ERROR_CODE, $th->getMessage());
+            echo ($th->getMessage());
             // http_response_code(PRECONDITION_FAILED_ERROR_CODE);
         }
     }
