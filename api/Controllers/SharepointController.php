@@ -155,6 +155,10 @@ class SharepointController
                         $folderId = $system->folder_id;
 
                         $file_path = $dir . $upload->file_name;
+                        $fileSize = filesize($file_path);
+                        if($fileSize > (240 * 1024 * 1024)){// Big files do chunky...
+                            
+                        } else{}
                         $file = basename($file_path);
                         $chunk_size = 5 * 1024 * 1024;
                         // Replace these with your actual values
@@ -238,6 +242,7 @@ class SharepointController
                         $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
                         curl_close($ch);
 
+                        echo "Check reaponse is : " . json_encode($response);
                         // Step 3.1: Handle response and error checking
                         if ($http_code >= 200 && $http_code < 300) {
                             // Upload complete, you may process the response if needed
@@ -258,7 +263,7 @@ class SharepointController
         } catch (\Throwable $th) {
             Utility::logError(SUCCESS_RESPONSE_CODE, $th->getMessage());
             response(PRECONDITION_FAILED_ERROR_CODE, $th->getMessage());
-            http_response_code(PRECONDITION_FAILED_ERROR_CODE);
+            // http_response_code(PRECONDITION_FAILED_ERROR_CODE);
         }
     }
 
