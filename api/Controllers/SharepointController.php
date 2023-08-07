@@ -133,7 +133,7 @@ class SharepointController
 
                         $file_path = $dir . $upload->file_name;
                         $file = basename($file_path);
-                        $chunk_size = 320 * 1024; // Must be 320 KiB
+                        $chunk_size = 5 * 1024 * 1024;
                         // Replace these with your actual values
                         $access_token = $this->accessToken;
 
