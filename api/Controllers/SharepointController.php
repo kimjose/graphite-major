@@ -141,6 +141,8 @@ class SharepointController
              */
             /** @var Upload[] */
             $uploads = Upload::where('uploaded_to_sharepoint', 0)->limit(1)->get();
+            $all = sizeof($uploads);
+            $failed = 0;
             foreach ($uploads as $upload) {
                 try {
                     $dir = $_ENV['PUBLIC_DIR'] . 'temp/';
@@ -225,14 +227,14 @@ class SharepointController
                         fclose($handle);
                         $upload->update(['uploaded_to_sharepoint' => 1, "upload_error" => ""]);
                         unlink($dir . $upload->file_name);
-                        // Step 3: Complete the Upload
                         
                     }
                 } catch (\Throwable $th) {
+                    $failed++;
                     Utility::logError(312, $th->getMessage() . " Upload is " . $upload->id);
                 }
             }
-            response(SUCCESS_RESPONSE_CODE, "Uploaded successfully");
+            response(SUCCESS_RESPONSE_CODE, ($all - $failed) . " out of {$all} Uploaded successfully");
         } catch (\Throwable $th) {
             Utility::logError(SUCCESS_RESPONSE_CODE, $th->getMessage());
             response(PRECONDITION_FAILED_ERROR_CODE, $th->getMessage());
