@@ -81,6 +81,7 @@ switch ($accessLevel) {
                             <th>Name</th>
                             <th>Program</th>
                             <th>Folder Id</th>
+                            <th>Last Upload</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -91,6 +92,7 @@ switch ($accessLevel) {
                                 <td><?php echo $system->name ?></td>
                                 <td><?php echo $system->program()->name ?></td>
                                 <td><?php echo $system->folder_id ?></td>
+                                <td><?php echo $system->lastUpload() != null ? $system->lastUpload()->created_date_time : '' ?></td>
                                 <td>
                                     <p class="link_edit_system" onclick='editSystem(<?php echo $system->id ?>, <?php echo $system->program_id ?>, "<?php echo $system->name ?>", "<?php echo $system->folder_id ?>")'>
                                         Edit </p>
