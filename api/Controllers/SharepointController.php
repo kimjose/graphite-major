@@ -41,6 +41,29 @@ class SharepointController
         curl_close($curl);
     }
 
+    public function refreshToken(){
+        $curl = curl_init("https://login.microsoftonline.com/1c17770e-a269-4517-b296-c71e84196454/oauth2/v2.0/token");
+
+        $postParameter = array(
+            'grant_type' => $_ENV['GRANT_TYPE'],
+            'client_id' => $_ENV['CLIENT_ID'],
+            'client_secret' => $_ENV['CLIENT_SECRET'],
+            'scope' => $_ENV['SCOPE']
+        );
+        curl_setopt($curl, CURLOPT_POSTFIELDS, $postParameter);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+
+        $curlResponse = json_decode(curl_exec($curl));
+        // print_r($curlResponse);
+        if ($curlResponse->error) {
+            throw new \Exception("Error Processing Request" . $curlResponse->error, 1);
+        }
+        $this->accessToken = $curlResponse->access_token;
+        //echo $token;
+
+        curl_close($curl);
+    }
+
     public function loadDriveFiles($systemId, $output = true)
     {
         try {
@@ -117,7 +140,7 @@ class SharepointController
              * the delete the file locally
              */
             /** @var Upload[] */
-            $uploads = Upload::where('uploaded_to_sharepoint', 0)->get();
+            $uploads = Upload::where('uploaded_to_sharepoint', 0)->limit(1)->get();
             foreach ($uploads as $upload) {
                 try {
                     $dir = $_ENV['PUBLIC_DIR'] . 'temp/';
@@ -188,6 +211,7 @@ class SharepointController
                             } else {
                                 // Error occurred, handle the error, and possibly retry the chunk
                                 echo "Error uploading chunk: $index\n";
+                                throw new \Exception("Error uploading chunk..." . json_encode($response));
                                 break;
                             }
 
