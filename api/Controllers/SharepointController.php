@@ -223,37 +223,10 @@ class SharepointController
                         }
 
                         fclose($handle);
-
+                        $upload->update(['uploaded_to_sharepoint' => 1, "upload_error" => ""]);
+                        unlink($dir . $upload->file_name);
                         // Step 3: Complete the Upload
-                        $headers = array(
-                            "Authorization: Bearer " . $access_token,
-                            "Content-Type: application/json"
-                        );
-
-                        $data = json_encode(array("file" => array()));
-
-                        $ch = curl_init();
-                        curl_setopt($ch, CURLOPT_URL, $uploadUrl);
-                        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PATCH");
-                        curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
-                        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-                        $response = curl_exec($ch);
-                        $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-                        curl_close($ch);
-
-                        echo "Check reaponse is {$http_code} : " . json_encode($response);
-                        // Step 3.1: Handle response and error checking
-                        if ($http_code >= 200 && $http_code < 300) {
-                            // Upload complete, you may process the response if needed
-                            $upload->update(['uploaded_to_sharepoint' => 1, "upload_error" => ""]);
-                            unlink($dir . $upload->file_name);
-                            echo "File upload successful!\n";
-                        } else {
-                            // Error occurred during completion, handle the error
-                            echo "Error completing the upload.\n";
-                        }
-
+                        
                     }
                 } catch (\Throwable $th) {
                     Utility::logError(312, $th->getMessage() . " Upload is " . $upload->id);
