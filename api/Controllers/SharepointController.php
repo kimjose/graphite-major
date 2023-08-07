@@ -242,7 +242,7 @@ class SharepointController
                         $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
                         curl_close($ch);
 
-                        echo "Check reaponse is : " . json_encode($response);
+                        echo "Check reaponse is {$http_code} : " . json_encode($response);
                         // Step 3.1: Handle response and error checking
                         if ($http_code >= 200 && $http_code < 300) {
                             // Upload complete, you may process the response if needed
