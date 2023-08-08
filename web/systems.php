@@ -36,7 +36,14 @@ switch ($accessLevel) {
     <div class="card">
         <div class="card-body">
             <h4>Systems</h4>
-            <button id="btnAddSystem" class="btn btn-secondary float-right" style="margin-top: -50px;" onclick="addSystem()">Add System</button>
+            <div class="row float-right" style="margin-top: -50px;">
+                <div class="col-auto">
+                    <button id="btnCsvTableExport" class="btn btn-primary" onclick="csvTableExport()">Export data</button>
+                </div>
+                <div class="col-auto">
+                    <button id="btnAddSystem" class="btn btn-secondary" onclick="addSystem()">Add System</button>
+                </div>
+            </div>
             <div class="d-none" id="divAddSystem">
 
                 <form action="" method="POST" onsubmit="event.preventDefault();" id="formSystem">
@@ -120,7 +127,8 @@ switch ($accessLevel) {
         color: #009610;
         cursor: pointer;
     }
-    .link_edit_system:hover{
+
+    .link_edit_system:hover {
         text-decoration: underline;
     }
 

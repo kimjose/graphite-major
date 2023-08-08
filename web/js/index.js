@@ -417,6 +417,59 @@ const createFolder = () => {
     });
 }
 
+
+function csvTableExport() {
+
+  let rows = [
+      ['#', 'Name', 'Program', 'Folder ID', 'Last Upload']
+  ]
+  let tableSystems = document.getElementById('tableSystems')
+  let tbody = tableSystems.querySelector("tbody");
+  let tableRows = tbody.querySelectorAll('tr')
+  for (let i = 0; i < tableRows.length; i++) {
+      let tr = tableRows[i]
+      if (i !== tableRows.length - 1) {
+          rows.push([
+              tr.cells[0].innerText,
+              tr.cells[1].innerText,
+              tr.cells[2].innerText,
+              tr.cells[3].innerText,
+              tr.cells[4].innerText
+          ])
+      } else {
+          /*rows.push([
+              tr.cells[0].innerText,
+              tr.cells[1].innerText,
+              tr.cells[2].innerText,
+              tr.cells[3].innerText,
+              tr.cells[4].innerText,
+              tr.cells[5].innerText,
+              tr.cells[6].innerText,
+              tr.cells[7].innerText
+          ])*/
+      }
+  }
+  let csvContent = "";
+  /* add the column delimiter as comma(,) and each row splitted by new line character (\n) */
+  console.log(rows)
+  rows.forEach(function(rowArray) {
+      let row = rowArray.join(",");
+      csvContent += row + "\n";
+  });
+  /* create a hidden <a> DOM node and set its download attribute */
+  let csv_file, download_link;
+  csv_file = new Blob([csvContent], {
+      type: "text/csv"
+  });
+  download_link = document.createElement("a");
+  download_link.download = 'systems.csv';
+  download_link.href = window.URL.createObjectURL(csv_file);
+  download_link.style.display = "none";
+  document.body.appendChild(download_link);
+  download_link.click();
+}
+
+
 const deleteFile = (fileId, folderId) => {
   let r = confirm(
     "Do you really want to delete the file? This action is irreversible"
