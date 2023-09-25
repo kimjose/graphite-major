@@ -132,7 +132,8 @@ switch ($accessLevel) {
                                 <td><?php echo $user->phone_number ?></td>
                                 <td>
                                     <?php
-                                    if ($user->access_level == 'Program') echo "<span class=\"badge badge-secondary rounded-pill\">Program</span>";
+                                    if ($user->access_level == 'Admin') echo "<span class=\"badge badge-primary rounded-pill\">System Admin</span>";
+                                    elseif($user->access_level == 'Program') echo "<span class=\"badge badge-secondary rounded-pill\">Program</span>";
                                     else {
                                         $ids = explode(',', $user->system_ids);
                                         foreach ($systems as $system) {
