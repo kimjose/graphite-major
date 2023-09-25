@@ -177,11 +177,11 @@ const saveUser = () => {
     selectAccessLevel.focus();
     return;
   }
-  let program = $(selectProgram).val()
-  if(program === ""){
-    toastr.error("Program is required.")
-    selectProgram.focus()
-    return
+  let program = $(selectProgram).val();
+  if (program === "") {
+    toastr.error("Program is required.");
+    selectProgram.focus();
+    return;
   }
   let systemIds = [];
 
@@ -222,6 +222,64 @@ const saveUser = () => {
     if (option.selected) {
       systemIds.push(option.value);
     }
+  }
+};
+
+const disableUser = (userId) => {
+  let r = confirm(
+    "Do you really want to disable this user account? Accounts disabled will be unable to login until they are re-enabled"
+  );
+  if (r) {
+    startLoader();
+    fetch("../user/disable", {
+      method: "POST",
+      headers: {
+        "content-type": "application/x-www-form-urlencoded",
+      },
+      body: JSON.stringify({ id: userId }),
+    })
+      .then((response) => {
+        return response.json();
+      })
+      .then((response) => {
+        endLoader();
+        if (response.code === 200) {
+          loadTabContent();
+        } else throw new Error(response.message);
+      })
+      .catch((err) => {
+        endLoader();
+        toastr.error(err.message);
+      });
+  }
+};
+
+const enableUser = (userId) => {
+  let r = confirm(
+    "Do you really want to enable this user account? "
+  );
+  if (r) {
+    startLoader();
+    fetch("../user/enable", {
+      method: "POST",
+      headers: {
+        "content-type": "application/x-www-form-urlencoded",
+      },
+      body: JSON.stringify({ id: userId }),
+    })
+      .then((response) => {
+        return response.json();
+      })
+      .then((response) => {
+        endLoader();
+        if (response.code === 200) {
+          loadTabContent();
+        } else throw new Error(response.message);
+      })
+      .catch((err) => {
+        endLoader();
+        toastr.error(err.message);
+      });
   }
 };
 
@@ -338,8 +396,8 @@ const toggleGetFolderId = () => {
   } else {
     divGetFolderId.classList.add("d-none");
   }
-  if(!btnCreateFolder.classList.contains('d-none')){
-    btnCreateFolder.classList.add('d-none')
+  if (!btnCreateFolder.classList.contains("d-none")) {
+    btnCreateFolder.classList.add("d-none");
   }
 };
 
@@ -348,10 +406,10 @@ const getFolderId = () => {
   let inputFolderPath = document.getElementById("inputFolderPath");
   let inputFolderId = document.getElementById("inputFolderId");
   let btnCreateFolder = document.getElementById("btnCreateFolder");
-  let program = $(selectProgram).val()
-  if(program == ''){
-    toastr.error("Select a program to continue.")
-    return
+  let program = $(selectProgram).val();
+  if (program == "") {
+    toastr.error("Select a program to continue.");
+    return;
   }
   let path = inputFolderPath.value.trim();
   if (path == "") {
@@ -372,8 +430,9 @@ const getFolderId = () => {
     })
     .catch((err) => {
       toastr.error(err.message);
-      if(err.message === "The resource could not be found."){
-        if(btnCreateFolder.classList.contains('d-none')) btnCreateFolder.classList.remove('d-none')
+      if (err.message === "The resource could not be found.") {
+        if (btnCreateFolder.classList.contains("d-none"))
+          btnCreateFolder.classList.remove("d-none");
       }
     });
 };
@@ -382,10 +441,10 @@ const createFolder = () => {
   let selectProgram = document.getElementById("selectProgram");
   let inputFolderPath = document.getElementById("inputFolderPath");
   let inputFolderId = document.getElementById("inputFolderId");
-  let program = $(selectProgram).val()
-  if(program == ''){
-    toastr.error("Select a program to continue.")
-    return
+  let program = $(selectProgram).val();
+  if (program == "") {
+    toastr.error("Select a program to continue.");
+    return;
   }
   let path = inputFolderPath.value.trim();
   if (path == "") {
@@ -394,7 +453,7 @@ const createFolder = () => {
   }
   toastr.info("Creating folder...");
   fetch(`../sharepoint/create_folder`, {
-    method: 'POST',
+    method: "POST",
     body: JSON.stringify({
       program_id: program,
       path: path,
@@ -402,7 +461,6 @@ const createFolder = () => {
     headers: {
       "content-type": "application/x-www-form-urlencoded",
     },
-
   })
     .then((response) => {
       return response.json();
@@ -415,29 +473,25 @@ const createFolder = () => {
     .catch((err) => {
       toastr.error(err.message);
     });
-}
-
+};
 
 function csvTableExport() {
-
-  let rows = [
-      ['#', 'Name', 'Program', 'Folder ID', 'Last Upload']
-  ]
-  let tableSystems = document.getElementById('tableSystems')
+  let rows = [["#", "Name", "Program", "Folder ID", "Last Upload"]];
+  let tableSystems = document.getElementById("tableSystems");
   let tbody = tableSystems.querySelector("tbody");
-  let tableRows = tbody.querySelectorAll('tr')
+  let tableRows = tbody.querySelectorAll("tr");
   for (let i = 0; i < tableRows.length; i++) {
-      let tr = tableRows[i]
-      if (i !== tableRows.length - 1) {
-          rows.push([
-              tr.cells[0].innerText,
-              tr.cells[1].innerText,
-              tr.cells[2].innerText,
-              tr.cells[3].innerText,
-              tr.cells[4].innerText
-          ])
-      } else {
-          /*rows.push([
+    let tr = tableRows[i];
+    if (i !== tableRows.length - 1) {
+      rows.push([
+        tr.cells[0].innerText,
+        tr.cells[1].innerText,
+        tr.cells[2].innerText,
+        tr.cells[3].innerText,
+        tr.cells[4].innerText,
+      ]);
+    } else {
+      /*rows.push([
               tr.cells[0].innerText,
               tr.cells[1].innerText,
               tr.cells[2].innerText,
@@ -447,28 +501,27 @@ function csvTableExport() {
               tr.cells[6].innerText,
               tr.cells[7].innerText
           ])*/
-      }
+    }
   }
   let csvContent = "";
   /* add the column delimiter as comma(,) and each row splitted by new line character (\n) */
-  console.log(rows)
-  rows.forEach(function(rowArray) {
-      let row = rowArray.join(",");
-      csvContent += row + "\n";
+  console.log(rows);
+  rows.forEach(function (rowArray) {
+    let row = rowArray.join(",");
+    csvContent += row + "\n";
   });
   /* create a hidden <a> DOM node and set its download attribute */
   let csv_file, download_link;
   csv_file = new Blob([csvContent], {
-      type: "text/csv"
+    type: "text/csv",
   });
   download_link = document.createElement("a");
-  download_link.download = 'systems.csv';
+  download_link.download = "systems.csv";
   download_link.href = window.URL.createObjectURL(csv_file);
   download_link.style.display = "none";
   document.body.appendChild(download_link);
   download_link.click();
 }
-
 
 const deleteFile = (fileId, folderId) => {
   let r = confirm(

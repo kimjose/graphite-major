@@ -34,6 +34,14 @@ $router->mount('/user', function() use($router){
         $controller = new UsersController();
         $controller->updateUser($id, $_POST);
     });
+    $router->post('/disable', function() use($data){
+        $controller = new UsersController();
+        $controller->disableUser($data);
+    });
+    $router->post('/enable', function() use($data){
+        $controller = new UsersController();
+        $controller->enableUser($data);
+    });
     $router->post('/request-otp', function() use($data){
         $controller = new UsersController();
         $controller->requestOtp($data);

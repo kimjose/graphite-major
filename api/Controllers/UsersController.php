@@ -50,6 +50,40 @@ class UsersController
         }
     }
 
+    public function disableUser($data){
+        try {
+            $attributes = ['id'];
+            $missing = Utility::checkMissingAttributes($data, $attributes);
+            throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : "));
+            $user = User::findOrFail($data['id']);
+            if($user->active == 0) throw new \Exception("Invalid operation...");
+            $user->active = 0;
+            $user->save();
+            response(SUCCESS_RESPONSE_CODE, "User account disabled successfully.");
+        } catch (\Throwable $th) {
+            Utility::logError(SUCCESS_RESPONSE_CODE, $th->getMessage());
+            response(PRECONDITION_FAILED_ERROR_CODE, $th->getMessage());
+            http_response_code(PRECONDITION_FAILED_ERROR_CODE);
+        }
+    }
+
+    public function enableUser($data){
+        try {
+            $attributes = ['id'];
+            $missing = Utility::checkMissingAttributes($data, $attributes);
+            throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : "));
+            $user = User::findOrFail($data['id']);
+            if($user->active == 1) throw new \Exception("Invalid operation...");
+            $user->active = 1;
+            $user->save();
+            response(SUCCESS_RESPONSE_CODE, "User account enabled successfully.");
+        } catch (\Throwable $th) {
+            Utility::logError(SUCCESS_RESPONSE_CODE, $th->getMessage());
+            response(PRECONDITION_FAILED_ERROR_CODE, $th->getMessage());
+            http_response_code(PRECONDITION_FAILED_ERROR_CODE);
+        }
+    }
+
     public function requestOtp($data){
         try {
             $attributes = ['email'];
@@ -57,6 +91,7 @@ class UsersController
             throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
             $user = User::where('email', $data['email'])->first();
             if($user == null) throw new \Exception("Error Processing : User not found.", -1);
+            if($user->active == 0) throw new \Exception("Error Processing : login not allowed.", -1);
             $recipient['address'] = $user->email;
             $recipient['name'] = $user->username;
             $recipients[] = $recipient;

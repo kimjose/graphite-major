@@ -5,6 +5,9 @@ use Umb\SystemBackup\Models\System;
 use Umb\SystemBackup\Models\Program;
 
 require_once __DIR__ . "/../vendor/autoload.php";
+$disableedBadge = "<span class=\"badge badge-warning rounded-pill\">Disabled</span>";
+$enabledBadge = "<span class=\"badge badge-primary rounded-pill\">Enabled</span>";
+
 $accessLevel = $_GET['access_level'];
 $programId = $_GET['program_id'];
 /** @var User[] */
@@ -116,6 +119,7 @@ switch ($accessLevel) {
                             <th>Phone Number</th>
                             <th>Access Level/Systems</th>
                             <th>Program</th>
+                            <th>Status</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -138,9 +142,15 @@ switch ($accessLevel) {
                                     ?>
                                 </td>
                                 <td><?php echo $user->program()->name ?></td>
+                                <td><?php echo $user->active == 1 ? $enabledBadge : $disableedBadge ?></td>
                                 <td>
                                     <p class="link_edit_user" onclick='editUser(<?php echo json_encode($user) ?>)'>
                                         Edit </p>
+                                    <?php if ($user->active == 0) : ?>
+                                        <p class="link_disable_user text-primary" onclick="enableUser(<?php echo $user->id ?>)">Enable</p>
+                                    <?php else : ?>
+                                        <p class="link_enable_user text-danger" onclick="disableUser(<?php echo $user->id ?>)">Disable</p>
+                                    <?php endif; ?>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
@@ -164,7 +174,11 @@ switch ($accessLevel) {
         color: #009610;
         cursor: pointer;
     }
-    .link_edit_user:hover{
+    .link_enable_user, .link_disable_user{
+        cursor: pointer;
+    }
+
+    .link_edit_user:hover, .link_disable_user:hover, .link_enable_user:hover {
         text-decoration: underline;
     }
 </style>
