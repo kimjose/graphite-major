@@ -7,6 +7,8 @@ require_once __DIR__ . "/auth.php";
 $systems = [];
 if ($currUser->access_level == 'Facility') {
     $systems = System::whereIn('id', explode(',', $currUser->system_ids))->get();
+} else if ($currUser->access_level == 'Program') {
+    $systems = System::where('program_id', $currUser->program_id)->get();
 } else {
     $systems = System::all();
 }
@@ -84,7 +86,7 @@ if ($currUser->access_level == 'Facility') {
                     <li class="nav-item">
                         <a class="nav-link tab" id="tabBackups" href="#backups" onclick="loadTabContent()">Backups</a>
                     </li>
-                    <?php if ($currUser->access_level == 'Program') : ?>
+                    <?php if ($currUser->access_level == 'Program' || $currUser->access_level == 'Admin') : ?>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 System Administration
@@ -92,23 +94,28 @@ if ($currUser->access_level == 'Facility') {
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                                 <li><a class="dropdown-item tab" id="tabUsers" href="#users" onclick="loadTabContent()">Users</a></li>
                                 <li><a class="dropdown-item tab" id="tabSystems" href="#systems" onclick="loadTabContent()">Systems</a>
-                                </li>
                                 <li>
                                     <hr class="dropdown-divider">
                                 </li>
-                            </ul>
+                                <?php if ($currUser->access_level === 'Admin') : ?><li><a class="dropdown-item tab" id="tabPrograms" href="#programs" onclick="loadTabContent()">Programs</a>
+                                    <li>
+                                        <hr class="dropdown-divider">
+                                    </li>
+                                <?php endif; ?>
                         </li>
-                    <?php endif; ?>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <?php echo $currUser->last_name . ' ' . $currUser->first_name . ' ' . $currUser->middle_name ?>
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item tab" id="tabUsers" href="#users" onclick="logOut()">Log Out</a></li>
-
-                        </ul>
-                    </li>
                 </ul>
+                </li>
+            <?php endif; ?>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <?php echo $currUser->last_name . ' ' . $currUser->first_name . ' ' . $currUser->middle_name ?>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                    <li><a class="dropdown-item tab" id="tabUsers" href="#users" onclick="logOut()">Log Out</a></li>
+
+                </ul>
+            </li>
+            </ul>
             </div>
         </div>
     </nav>
@@ -210,7 +217,7 @@ if ($currUser->access_level == 'Facility') {
                     }
                     case "#users": {
                         document.querySelector("#tabUsers").classList.add('active')
-                        fetch(`users`)
+                        fetch(`users?access_level=${user.access_level}&program_id=${user.program_id}`)
                             .then(response => {
                                 return response.text()
                             })
@@ -222,12 +229,12 @@ if ($currUser->access_level == 'Facility') {
                             .catch(err => {
                                 toastr.error(err.message)
                             })
-                            $('.select2').select2()
+                        $('.select2').select2()
                         break;
                     }
                     case "#systems": {
                         document.querySelector("#tabSystems").classList.add('active')
-                        fetch(`systems`)
+                        fetch(`systems?access_level=${user.access_level}&program_id=${user.program_id}`)
                             .then(response => {
                                 return response.text()
                             })
@@ -235,6 +242,22 @@ if ($currUser->access_level == 'Facility') {
                                 // console.log('response is ' + response)
                                 $("#contentSection").html(response)
                                 $('#tableSystems').dataTable();
+                            })
+                            .catch(err => {
+                                toastr.error(err.message)
+                            })
+                        break;
+                    }
+                    case "#programs": {
+                        document.querySelector("#tabPrograms").classList.add('active')
+                        fetch(`programs`)
+                            .then(response => {
+                                return response.text()
+                            })
+                            .then(response => {
+                                // console.log('response is ' + response)
+                                $("#contentSection").html(response)
+                                $('#tablePrograms').dataTable();
                             })
                             .catch(err => {
                                 toastr.error(err.message)

@@ -16,6 +16,7 @@ $uploads = Upload::where('system_id', $systemId)->orderBy('created_at', 'desc')-
 <div class="container-fluid mt-4">
     <div class="card">
         <div class="card-body">
+            <p>Kindly upload a zipped file to save on space.</p>
             <form action="" method="POST" id="formUploadFile" onsubmit="event.preventDefault()">
                 <div class="form-group">
                     <input type="file" name="upload_file" id="inputFile" class="form-control">

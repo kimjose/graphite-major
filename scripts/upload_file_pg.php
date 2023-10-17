@@ -22,6 +22,7 @@ try {
     echo " \033[93m  Backing up database and compressing \033[0m ⏳⏳⏳⏳ \n";
     $cmd = "pg_dump --dbname=postgresql://{$dbUser}:{$dbPassword}@127.0.0.1:5432/{$dbName} > {$fileName}";
     $cmd .= " && 7z a -t7z {$fileNameFinal} {$fileName} ";
+    $cmd .= " && rm {$fileName}";
 //echo $cmd; return;
     //echo 'Executing -> ' . $cmd . " \n";
     if (substr(php_uname(), 0, 7) == "Windows") {

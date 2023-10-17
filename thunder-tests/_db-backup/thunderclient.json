@@ -80,7 +80,7 @@
     "params": [],
     "body": {
       "type": "json",
-      "raw": "{\n  \"mfl_code\": 12935,\n  \"name\": \"Embakasi Health Center \",\n  \"folder_id\": \"0167YEQWCH4C7YLKVT65F32V3FC7XA5Z62\"\n}",
+      "raw": "{\n  \"program_id\": 2,\n  \"name\": \"Embakasi Health Center \",\n  \"folder_id\": \"0167YEQWCH4C7YLKVT65F32V3FC7XA5Z62\"\n}",
       "form": []
     },
     "tests": []
@@ -104,7 +104,7 @@
     "params": [],
     "body": {
       "type": "json",
-      "raw": "{\n  \"mfl_code\": 12745,\n  \"name\": \"Test Facility\",\n  \"folder_id\": \"\"\n}",
+      "raw": "{\n  \"program_id\": 2,\n  \"name\": \"Test Facility\",\n  \"folder_id\": \"\"\n}",
       "form": []
     },
     "tests": []
@@ -469,5 +469,57 @@
         "value": "200"
       }
     ]
+  },
+  {
+    "_id": "4e120efb-67d4-4c80-b3e3-c34174096356",
+    "colId": "145d0ab0-3376-4a72-b482-566376da2b87",
+    "containerId": "",
+    "name": "get programs",
+    "url": "{{base_url}}program/all",
+    "method": "GET",
+    "sortNum": 150000,
+    "created": "2023-06-19T09:16:10.197Z",
+    "modified": "2023-06-19T09:16:34.262Z",
+    "headers": [],
+    "params": [],
+    "tests": []
+  },
+  {
+    "_id": "81e7c1b5-f252-4f08-91c8-c28591dd7ab3",
+    "colId": "145d0ab0-3376-4a72-b482-566376da2b87",
+    "containerId": "",
+    "name": "create program",
+    "url": "{{base_url}}program/create",
+    "method": "POST",
+    "sortNum": 160000,
+    "created": "2023-06-19T09:17:42.042Z",
+    "modified": "2023-06-19T09:27:39.410Z",
+    "headers": [],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\n  \"name\": \"System Default\",\n  \"root_folder_path\": \"SYSTEM BACKUP/EVENT MANAGER/\"\n}",
+      "form": []
+    },
+    "tests": []
+  },
+  {
+    "_id": "5efeb624-d572-4efb-909b-c358f4525b45",
+    "colId": "145d0ab0-3376-4a72-b482-566376da2b87",
+    "containerId": "",
+    "name": "update program",
+    "url": "{{base_url}}program/update/1",
+    "method": "POST",
+    "sortNum": 180000,
+    "created": "2023-06-19T09:28:43.141Z",
+    "modified": "2023-06-19T09:29:50.493Z",
+    "headers": [],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\n  \"name\": \"System-Default\",\n  \"root_folder_path\": \"SYSTEM BACKUP/EVENT MANAGER/\"\n}",
+      "form": []
+    },
+    "tests": []
   }
 ]

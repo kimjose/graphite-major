@@ -22,7 +22,7 @@ $c = 1;
                 </div>
             </div>
             <div class="table-responsive">
-                <table id="tableBackups" class="table table-bordered table-info">
+                <table id="tableBackups" class="table table-bordered table-info  table-striped">
                     <thead>
                         <tr>
                             <th>#</th>
@@ -64,5 +64,8 @@ $c = 1;
     .delete-file {
         color: red;
         cursor: pointer;
+    }
+    .delete-file:hover, a:hover{
+        text-decoration: underline;
     }
 </style>

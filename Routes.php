@@ -5,6 +5,7 @@ use Umb\SystemBackup\Controllers\SharepointController;
 use Umb\SystemBackup\Controllers\UsersController;
 use Umb\SystemBackup\Controllers\Utils\Utility;
 use Umb\SystemBackup\Models\DriveFile;
+use Umb\SystemBackup\Models\Program;
 use Umb\SystemBackup\Models\System;
 use Umb\SystemBackup\Models\Upload;
 use Umb\SystemBackup\Models\User;
@@ -33,6 +34,14 @@ $router->mount('/user', function() use($router){
         $controller = new UsersController();
         $controller->updateUser($id, $_POST);
     });
+    $router->post('/disable', function() use($data){
+        $controller = new UsersController();
+        $controller->disableUser($data);
+    });
+    $router->post('/enable', function() use($data){
+        $controller = new UsersController();
+        $controller->enableUser($data);
+    });
     $router->post('/request-otp', function() use($data){
         $controller = new UsersController();
         $controller->requestOtp($data);
@@ -50,7 +59,7 @@ $router->mount('/system', function() use($router){
     $data = json_decode(file_get_contents('php://input'), true);
     $router->post('/create', function() use ($data){
         try{
-            $attributes = ['name', 'folder_id'];
+            $attributes = ['name', 'folder_id', 'program_id'];
             $missing = Utility::checkMissingAttributes($data, $attributes);
             throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
             $system = System::create($data);
@@ -63,7 +72,7 @@ $router->mount('/system', function() use($router){
     });
     $router->post('/update/{id}', function($id) use ($data){
         try{
-            $attributes = ['name', 'folder_id'];
+            $attributes = ['name', 'folder_id', 'program_id'];
             $missing = Utility::checkMissingAttributes($data, $attributes);
             throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
             $system = System::findOrFail($id);
@@ -85,13 +94,60 @@ $router->mount('/sharepoint', function() use($router){
         $controller->uploadQueuedFiles();
     });
     $router->get('/folder_id', function() use ($controller){
-        $controller->getFolderId($_GET['path']);
+        $controller->getFolderId($_GET['program_id'], $_GET['path']); 
+    });
+    $router->post('/create_folder', function() use ($controller){
+        $data = json_decode(file_get_contents('php://input'), true);
+        $controller->createFolder($data);
+    });
+    $router->post('/upload_chunk', function() use($controller){
+        $controller->uploadChunkedFileMsGraphTest();
     });
     $router->delete('/path/{folder_id}/{id}', function($folder_id, $id) use($controller){
         $controller->deleteFile($folder_id, $id);
     });
     $router->delete('/delete_task/{system_id}', function($system_id) use ($controller){
         $controller->deleteTask($system_id);
+    });
+});
+$router->mount('/program', function() use ($router){
+    $router->get('/all', function(){
+        response(SUCCESS_RESPONSE_CODE, 'Programs', Program::all());
+    });
+    $data = json_decode(file_get_contents('php://input'), true);
+    $router->post('/create', function() use($data){
+        try{
+            $attributes = ['name', 'root_folder_path'];
+            $missing = Utility::checkMissingAttributes($data, $attributes);
+            throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
+            if(trim($data['name']) == '' || trim($data['root_folder_path']) == '') throw new Exception('Invalid data passed', -1);
+            if(!str_ends_with($data['root_folder_path'], '/')) throw new Exception("The root_folder_path needs to end with a '/' ");
+            $createdBy = $data['created_by'] ?? 1;
+            $data['created_by'] = $createdBy;
+            $program = Program::create($data);
+            response(SUCCESS_RESPONSE_CODE, 'Program created successfully', $program);
+        } catch(\Throwable $th){
+            Utility::logError(PRECONDITION_FAILED_ERROR_CODE, $th->getMessage());
+            response(PRECONDITION_FAILED_ERROR_CODE, $th->getMessage());
+            http_response_code(PRECONDITION_FAILED_ERROR_CODE);
+        }
+    });
+    $router->post('/update/{id}', function($id) use($data){
+        try{
+            $attributes = ['name', 'root_folder_path'];
+            $missing = Utility::checkMissingAttributes($data, $attributes);
+            throw_if(sizeof($missing) > 0, new \Exception("Missing parameters passed : " . json_encode($missing)));
+            if(trim($data['name']) == '' || trim($data['root_folder_path']) == '') throw new Exception('Invalid data passed', -1);
+            if(!str_ends_with($data['root_folder_path'], '/')) throw new Exception("The root_folder_path needs to end with a '/' ");
+            $program = Program::find($id);
+            if($program == null) throw new \Exception("Program not found...");
+            $program->update($data);
+            response(SUCCESS_RESPONSE_CODE, 'Program updated successfully', $program);
+        } catch(\Throwable $th){
+            Utility::logError(PRECONDITION_FAILED_ERROR_CODE, $th->getMessage());
+            response(PRECONDITION_FAILED_ERROR_CODE, $th->getMessage());
+            http_response_code(PRECONDITION_FAILED_ERROR_CODE);
+        }
     });
 });
 $router->get('/all_files', function(){

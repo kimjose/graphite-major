@@ -2,10 +2,39 @@
 
 use Umb\SystemBackup\Models\User;
 use Umb\SystemBackup\Models\System;
+use Umb\SystemBackup\Models\Program;
 
 require_once __DIR__ . "/../vendor/autoload.php";
-$users = User::all();
-$systems = System::all();
+$disableedBadge = "<span class=\"badge badge-warning rounded-pill\">Disabled</span>";
+$enabledBadge = "<span class=\"badge badge-primary rounded-pill\">Enabled</span>";
+
+$accessLevel = $_GET['access_level'];
+$programId = $_GET['program_id'];
+/** @var User[] */
+$users = [];
+/** @var System[] */
+$systems = [];
+/** @var Program */
+$programs = [];
+switch ($accessLevel) {
+    case "Admin": {
+            $users = User::all();
+            $systems = System::all();
+            $programs = Program::all();
+            break;
+        }
+    case "Program": {
+            if (!$programId) die('Program not provided');
+            $users = User::where('program_id', $programId)->where('access_level', 'NOT LIKE', 'Admin')->get();
+            $systems = System::where('program_id', $programId)->get();
+            $programs = Program::where('id', $programId)->get();
+            break;
+        }
+    default: {
+            die('Unable to proceed...');
+            break;
+        }
+}
 ?>
 
 <div class="container-fluid mt-4">
@@ -28,8 +57,8 @@ $systems = System::all();
                                 <input type="text" class="form-control" id="inputFirstName" required name="first_name" placeholder="First Name">
                             </div>
                             <div class="form-group">
-                                <label for="inputMiddleName">Last Name</label>
-                                <input type="text" class="form-control" id="inputMiddleName" name="middle_name" placeholder="Last Name">
+                                <label for="inputMiddleName">Middle Name</label>
+                                <input type="text" class="form-control" id="inputMiddleName" name="middle_name" placeholder="Middle Name">
                             </div>
                         </div>
                         <div class="col-md-6 col-sm-12">
@@ -45,11 +74,21 @@ $systems = System::all();
                                 <label for="">Access Level</label>
                                 <select name="access_level" id="selectAccessLevel" class="form-control" onchange="accessLevelChanged()">
                                     <option value="" <?php echo $id == '' ? 'selected' : '' ?> hidden>Select level</option>
+                                    <?php if ($accessLevel == 'Admin') : ?><option value="Admin">Administrator</option> <?php endif; ?>
                                     <option value="Program">Program</option>
                                     <option value="Facility">Facility / Systems</option>
                                 </select>
                             </div>
 
+                            <div class="form-group">
+                                <label for="selectProgram">Program</label>
+                                <select name="program_id" id="selectProgram" class="form-control" required>
+                                    <option value="" selected hidden>Select Program</option>
+                                    <?php foreach ($programs as $program) : ?>
+                                        <option value="<?php echo $program->id ?>"><?php echo $program->name ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
                             <div class="form-group" id="divSelectSystem">
                                 <label for="selectSystemForm">Select System</label>
                                 <select class="select2" id="selectSystemForm" name="system_ids[]" multiple="multiple" data-placeholder="Select systems">
@@ -79,6 +118,8 @@ $systems = System::all();
                             <th>Email</th>
                             <th>Phone Number</th>
                             <th>Access Level/Systems</th>
+                            <th>Program</th>
+                            <th>Status</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -91,7 +132,8 @@ $systems = System::all();
                                 <td><?php echo $user->phone_number ?></td>
                                 <td>
                                     <?php
-                                    if ($user->access_level == 'Program') echo "<span class=\"badge badge-secondary rounded-pill\">Program</span>";
+                                    if ($user->access_level == 'Admin') echo "<span class=\"badge badge-primary rounded-pill\">System Admin</span>";
+                                    elseif($user->access_level == 'Program') echo "<span class=\"badge badge-secondary rounded-pill\">Program</span>";
                                     else {
                                         $ids = explode(',', $user->system_ids);
                                         foreach ($systems as $system) {
@@ -100,9 +142,16 @@ $systems = System::all();
                                     }
                                     ?>
                                 </td>
+                                <td><?php echo $user->program()->name ?></td>
+                                <td><?php echo $user->active == 1 ? $enabledBadge : $disableedBadge ?></td>
                                 <td>
-                                    <p class="" id="link_edit_user" onclick='editUser(<?php echo json_encode($user) ?>)'>
+                                    <p class="link_edit_user" onclick='editUser(<?php echo json_encode($user) ?>)'>
                                         Edit </p>
+                                    <?php if ($user->active == 0) : ?>
+                                        <p class="link_disable_user text-primary" onclick="enableUser(<?php echo $user->id ?>)">Enable</p>
+                                    <?php else : ?>
+                                        <p class="link_enable_user text-danger" onclick="disableUser(<?php echo $user->id ?>)">Disable</p>
+                                    <?php endif; ?>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
@@ -121,9 +170,17 @@ $systems = System::all();
         border-bottom-right-radius: 5px;
         margin-bottom: 10px;
     }
-    #link_edit_user {
+
+    .link_edit_user {
         color: #009610;
         cursor: pointer;
+    }
+    .link_enable_user, .link_disable_user{
+        cursor: pointer;
+    }
+
+    .link_edit_user:hover, .link_disable_user:hover, .link_enable_user:hover {
+        text-decoration: underline;
     }
 </style>
 
