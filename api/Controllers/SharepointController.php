@@ -228,8 +228,6 @@ class SharepointController
                             }
 
                             fclose($handle);
-                            $upload->update(['uploaded_to_sharepoint' => 1, "upload_error" => ""]);
-                            unlink($dir . $upload->file_name);
                         } else {
 
                             $fileName = $upload->file_name;
@@ -283,9 +281,9 @@ class SharepointController
                                     'created_date_time' => $createdAt
                                 ]);
                             }
-                            $upload->update(['uploaded_to_sharepoint' => 1, "upload_error" => ""]);
-                            unlink($dir . $upload->file_name);
                         }
+                        $upload->update(['uploaded_to_sharepoint' => 1, "upload_error" => ""]);
+                        unlink($dir . $upload->file_name);
                     }
                 } catch (\Throwable $th) {
                     $failed++;

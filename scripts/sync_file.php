@@ -10,7 +10,7 @@ $clientSecret = $_ENV['CLIENT_SECRET'];
 
 $fileName = 'FILE_NAME';
 $groupId = $_ENV['GROUP_ID'];
-$teamId= $_ENV['TEAM_ID'];
+$teamId = $_ENV['TEAM_ID'];
 
 $graph = new Graph();
 $graph->setAccessToken(getAccessToken($tenantId, $clientId, $clientId));
@@ -78,26 +78,26 @@ function getAccessToken($tenantId, $clientId, $clientSecret)
 
     $curl = curl_init("https://login.microsoftonline.com/1c17770e-a269-4517-b296-c71e84196454/oauth2/v2.0/token");
 
-        $postParameter = array(
-            'grant_type' => $_ENV['GRANT_TYPE'],
-            'client_id' => $_ENV['CLIENT_ID'],
-            'client_secret' => $_ENV['CLIENT_SECRET'],
-            'scope' => $_ENV['SCOPE']
-        );
-        curl_setopt($curl, CURLOPT_POSTFIELDS, $postParameter);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+    $postParameter = array(
+        'grant_type' => $_ENV['GRANT_TYPE'],
+        'client_id' => $_ENV['CLIENT_ID'],
+        'client_secret' => $_ENV['CLIENT_SECRET'],
+        'scope' => $_ENV['SCOPE']
+    );
+    curl_setopt($curl, CURLOPT_POSTFIELDS, $postParameter);
+    curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 
-        $curlResponse = json_decode(curl_exec($curl));
-        // print_r($curlResponse);
-        if ($curlResponse->error) {
-            throw new \Exception("Error Processing Request" . $curlResponse->error, 1);
-        }
-       // echo "Token is :    " . $curlResponse->access_token . "\n";
-        return $curlResponse->access_token;
-        //echo $token;
+    $curlResponse = json_decode(curl_exec($curl));
+    // print_r($curlResponse);
+    if ($curlResponse->error) {
+        throw new \Exception("Error Processing Request" . $curlResponse->error, 1);
+    }
+    // echo "Token is :    " . $curlResponse->access_token . "\n";
+    curl_close($curl);
+    return $curlResponse->access_token;
+    //echo $token;
 
-        curl_close($curl);
-/*
+    /*
     $url = "https://login.microsoftonline.com/{$tenantId}/oauth2/token";
     $data = [
         'grant_type' => 'client_credentials',
